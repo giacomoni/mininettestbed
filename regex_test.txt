@@ -1,0 +1,6 @@
+qdisc netem 1: root refcnt 2 limit 1000 delay 5.0ms
+ Sent 247 bytes 1 pkt (dropped 2, overlimits 3 requeues 4) 
+ backlog 5b 6p requeues 1
+qdisc tbf 1: root rate 12Mbit burst 5998b lat 17.0ms 
+ Sent 247 bytes 3 pkt (dropped 7, overlimits 8 requeues 9) 
+ backlog 10b 11p requeues 2 
