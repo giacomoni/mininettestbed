@@ -1,2 +1,4 @@
 *.pyc
 results/*
+*.zip
+rl_logging/*

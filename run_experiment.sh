@@ -55,16 +55,17 @@
 
 
 
-METHODS="6"
 RUNS="1"
-for method in $METHODS
+BANDWIDTHS="10 100 1000" 
+for n in `seq 2 2 50`;
 do
-    for run in $RUNS
+    for bw in $BANDWIDTHS:
     do
-        sudo python experiment.py 10 10 2 cubic $run
-        sudo python experiment.py 100 10 1 cubic $run
-        sudo python experiment.py 10 10 1 cubic  $run
-        sudo python experiment.py 100 10 2 cubic $run
+        for run in $RUNS
+        do
+            sudo python experiment.py 10 $bw 2 cubic $run $n
+
+        done
     done
 done
 

@@ -21,6 +21,7 @@ class Emulation:
         self.path = path
         self.qmonitors = []
         self.tcp_probe = False
+        self.cpu_usage = False
 
         self.orca_flows_counter = 0
 
@@ -131,6 +132,11 @@ class Emulation:
         if self.tcp_probe:
             start_tcpprobe(self.path,"tcp_probe.txt")
 
+        if self.cpu_usage:
+            cpu_monitor = Process(target=monitor_cpu, args=(0.5,'%s/cpu' % (self.path)))
+            cpu_monitor.start()
+
+
         for call in self.call_second:
             time.sleep(call.waiting_time)
             call.command(*call.params)
@@ -147,6 +153,10 @@ class Emulation:
             if monitor is not None:
                 monitor.terminate()
 
+        if self.cpu_usage:
+            if cpu_monitor is not None:
+                cpu_monitor.terminate()
+
         if self.tcp_probe:
             stop_tcpprobe()
 
@@ -155,6 +165,10 @@ class Emulation:
         if "tcp_probe" in monitors:
             self.tcp_probe = True
             monitors.remove("tcp_probe")
+
+        if "cpu_usage" in monitors:
+            self.cpu_usage = True
+            monitors.remove("cpu_usage")
 
         for monitor in monitors:
             node, interface = monitor.split('-')

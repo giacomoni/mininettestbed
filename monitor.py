@@ -6,7 +6,22 @@ import subprocess
 import os
 import re
 from utils import *
+import psutil as ps
 
+def monitor_cpu(interval_sec = 1, path = default_dir):
+    mkdirp(path)
+    fname = "%s/cpu.txt" % path
+    f = open(fname, 'w')
+    f.write('time,cpu_usage\n')
+    f.close()
+    while 1:
+        usage = ps.cpu_percent()
+        tmp = '%f,%f\n' % (time(), usage)
+        f = open(fname, 'a')
+        f.write(tmp)
+        f.close()
+        sleep(interval_sec)  
+    return
 
 
 def monitor_qlen(iface, interval_sec = 1, path = default_dir):
@@ -35,7 +50,7 @@ def monitor_qlen(iface, interval_sec = 1, path = default_dir):
                 tmp += ',,,\n'
         f = open(fname, 'a')
         f.write(tmp)
-        f.close
+        f.close()
         sleep(interval_sec)
     return
 
@@ -86,9 +101,15 @@ def start_tcpprobe(path,outfile="cwnd.txt"):
 def stop_tcpprobe():
     Popen("killall -9 cat", shell=True).wait()
 
-def start_qmon(iface, interval_sec=0.1, outfile="q.txt"):
+def start_qmon(iface, interval_sec=0.1, path=default_dir):
     monitor = Process(target=monitor_qlen,
-                      args=(iface, interval_sec, outfile))
+                      args=(iface, interval_sec, path))
+    monitor.start()
+    return monitor
+
+def start_cpumonitor(interval_sec=1, path=default_dir):
+    monitor = Process(target=monitor_cpu,
+                      args=(interval_sec, path))
     monitor.start()
     return monitor
 
