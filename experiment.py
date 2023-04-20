@@ -9,14 +9,14 @@ import os
 from emulation import *
 import sys
 
-def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buffer_mult=3, run=0):
+def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buffer_mult=3, run=0, aqm='fifo'):
     if topology == 'Dumbell':
         topo = DumbellTopo(**params)
     else:
         print("ERROR: topology \'%s\' not recognised" % topology)
     
     net = Mininet(topo=topo)
-    path = "%s/mininettestbed/results/%s_%smbit_%sms_%spkts_%stcpbuf_%s/run%s" % (os.getenv("HOME"), topology, bw, delay, int(qsize_in_bytes/1500), tcp_buffer_mult, protocol, run)
+    path = "/home/luca/mininettestbed/results/%s/%s_%smbit_%sms_%spkts_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), tcp_buffer_mult, protocol, run)
     mkdirp(path)
 
     bdp_in_bytes = int(10*(2**20)*2*delay*(10**-3)/8)
@@ -29,16 +29,19 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
 
     net.start()
 
-    network_config = [NetworkConf('s1', 's2', bw, 2*delay, qsize_in_bytes, False)]
+    network_config = [NetworkConf('s1', 's2', None, 2*delay, qsize_in_bytes, False),
+                      NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False)]
     
-    traffic_config = [TrafficConf('c1', 'x1', 0, 60, protocol),
-                      TrafficConf('c2', 'x2', 30, 30, protocol)]
+    traffic_config = [TrafficConf('c1', 'x1', 0, 100, protocol),
+                      TrafficConf('c2', 'x2', 25, 75, protocol),
+                      TrafficConf('c3', 'x3', 50, 50, protocol),
+                      TrafficConf('c4', 'x4', 75, 25, protocol)]
     
     em = Emulation(net, network_config, traffic_config, path)
 
-    em.configure_network()
+    em.configure_network(aqm=aqm)
     em.configure_traffic()
-    em.set_monitors(['tcp_probe', 's1-eth1'])
+    em.set_monitors(['tcp_probe', 's1-eth1', 's2-eth2'])
     em.run()
     em.dump_info()
     net.stop()
@@ -51,12 +54,16 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
 if __name__ == '__main__':
 
     topology = 'Dumbell'
-    params = {'n':2}
+    params = {'n':4}
     delay = int(sys.argv[1])
     bw = int(sys.argv[2])
     qmult = int(sys.argv[3])
     protocol = sys.argv[4]
     run = int(sys.argv[5])
+    if len(sys.argv) > 6:
+        aqm = sys.argv[6]
+    else:
+        aqm = 'fifo'
     bdp_in_bytes = int(bw*(2**20)*2*delay*(10**-3)/8)
 
     # Same sysctl as original Orca
@@ -67,7 +74,7 @@ if __name__ == '__main__':
     # os.system('sudo sysctl -w fs.inotify.max_user_watches=524288')
     # os.system('sudo sysctl -w fs.inotify.max_user_instances=524288')
 
-    run_emulation(topology, protocol, params, bw, delay, qmult*bdp_in_bytes, 0, run)
+    run_emulation(topology, protocol, params, bw, delay, qmult*bdp_in_bytes, 22, run, aqm)
 
     # Plot results
     # plot_results(path)

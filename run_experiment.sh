@@ -54,17 +54,21 @@
 # sudo python experiment.py 100 10 5 cubic 2
 
 
-
-METHODS="6"
+PROTOCOLS="orca cubic"
+AQMS="fq fq_codel codel fifo"
 RUNS="1"
-for method in $METHODS
+
+for aqm in $AQMS
 do
-    for run in $RUNS
+    for protocol in $PROTOCOLS
     do
-        sudo python experiment.py 10 10 2 cubic $run
-        sudo python experiment.py 100 10 1 cubic $run
-        sudo python experiment.py 10 10 1 cubic  $run
-        sudo python experiment.py 100 10 2 cubic $run
+        for run in $RUNS
+        do
+            sudo python experiment.py 10 50 1 $protocol $run $aqm
+            sudo python experiment.py 100 50 1 $protocol $run $aqm
+            sudo python experiment.py 10 50 2 $protocol  $run $aqm
+            sudo python experiment.py 100 50 2 $protocol $run $aqm
+        done
     done
 done
 

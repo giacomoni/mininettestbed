@@ -51,7 +51,6 @@ def monitor_ifconfig(iface, interval_sec = 1, path = default_dir):
     while 1:
         p = Popen(cmd, shell=True, stdout=PIPE)
         output = p.stdout.read()
-        print(output)
         # tmp = ''
         # matches_queued = pat_queued.findall(output)
         # matches_dropped = pat_dropped.findall(output)

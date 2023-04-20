@@ -24,7 +24,7 @@ class Emulation:
 
         self.orca_flows_counter = 0
 
-    def configure_network(self, network_config=None):
+    def configure_network(self, network_config=None, aqm='fifo'):
         if network_config:
             if not self.network_config:
                 self.network_config = network_config
@@ -39,9 +39,9 @@ class Emulation:
         for config in self.network_config:
             links = self.network.linksBetween(self.network.get(config.node1), self.network.get(config.node2))
             for link in links:
-                self.configure_link(link, config.bw, config.delay, config.qsize, config.bidir)
+                self.configure_link(link, config.bw, config.delay, config.qsize, config.bidir, aqm=aqm)
     
-    def configure_link(self, link, bw, delay, qsize, bidir):
+    def configure_link(self, link, bw, delay, qsize, bidir, aqm='fifo'):
         interfaces = [link.intf1, link.intf2]
         if bidir:
             n = 2
@@ -52,13 +52,34 @@ class Emulation:
             node = interfaces[i].node
             
             if delay and not bw:
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms' % (intf_name, delay)
+                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms ' % (intf_name, delay)
+                # if aqm == 'fq_codel':
+                #     cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: fq_codel limit 17476 target 5ms interval 100ms flows 100" % (intf_name)
+                # elif aqm == 'codel':
+                #     cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: codel limit 17476 target 5ms interval 100ms" % (intf_name)
+                # elif aqm == 'fq':
+                #     cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: sfq perturb 10" % (intf_name)
+
             elif bw and not delay:
                 burst = int(10*bw*(2**20)/250/8)
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 tbf rate %smbit burst %s limit %s' % (intf_name, bw, burst, qsize)
+                cmd = 'sudo tc qdisc add dev %s root handle 1:0 tbf rate %smbit burst %s limit %s ' % (intf_name, bw, burst, qsize)
+                if aqm == 'fq_codel':
+                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: fq_codel limit %s target 5ms interval 100ms flows 100" % (intf_name,   max(1000, 2*int(qsize/1500)))
+                elif aqm == 'codel':
+                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: codel limit %s target 5ms interval 100ms" % (intf_name,   max(1000, 2*int(qsize/1500)))
+                elif aqm == 'fq':
+                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: sfq perturb 10" % (intf_name)
+
             elif delay and bw:
                 burst = int(10*bw*(2**20)/250/8)
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc add dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s' % (intf_name, delay,  max(1000, 2*int(qsize/1500)), intf_name, bw, burst, qsize)
+                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc add dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s ' % (intf_name, delay,  max(1000, 2*int(qsize/1500)), intf_name, bw, burst, qsize)
+                if aqm == 'fq_codel':
+                    cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: fq_codel limit %s target 5ms interval 100ms flows 100" % (intf_name,   max(1000, 2*int(qsize/1500)))
+                elif aqm == 'codel':
+                    cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: codel limit %s target 5ms interval 100ms" % (intf_name,   max(1000, 2*int(qsize/1500)))
+                elif aqm == 'fq':
+                    cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: sfq perturb 10" % (intf_name)
+
             else:
                 print("ERROR: either the delay or bandiwdth must be specified")
 
@@ -166,7 +187,7 @@ class Emulation:
 
     def start_iperf_server(self, node_name, port=5201, monitor_interval=1):
         node = self.network.get(node_name)
-        iperfArgs = 'iperf3 -p %d -i %s --one-off --json ' % (port, 5)
+        iperfArgs = 'iperf3 -p %d -i %s --one-off --json ' % (port, monitor_interval)
         cmd = iperfArgs + '-s' 
         print("Sending command '%s' to host %s" % (cmd, node.name))
         node.sendCmd(cmd)
