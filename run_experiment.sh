@@ -56,7 +56,7 @@
 
 PROTOCOLS="orca cubic"
 AQMS="fq fq_codel codel fifo"
-RUNS="1"
+RUNS="1 2 3"
 
 for aqm in $AQMS
 do
