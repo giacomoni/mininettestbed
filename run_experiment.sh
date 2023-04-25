@@ -55,8 +55,8 @@
 
 
 PROTOCOLS="aurora"
-AQMS="fifo"
-RUNS="1"
+AQMS="fifo fq codel fq_codel"
+RUNS="1 2 3"
 
 for aqm in $AQMS
 do
