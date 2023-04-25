@@ -188,3 +188,60 @@ def parse_orca_output(file, offset):
         df["totalgoodput"] = df["totalgoodput"].astype(float)
     
     return df
+
+def parse_aurora_output(file, offset):
+    with open(file, 'r') as fin:
+        auroraOutput = fin.read()
+
+    start_index = auroraOutput.find("new connection")
+    if start_index == -1:
+        start_index = auroraOutput.find("No connection established within")
+        if start_index == -1:
+            # Client case
+            start_index = auroraOutput.find("finished connect")
+            if start_index == -1:
+                case = "client"
+                success = False
+            else:
+                case = "client"
+                success = True
+        
+        else:
+            case = "server"
+            success = False
+    else:
+        case = "server"
+        success = True
+
+    if success:
+        auroraOutput = auroraOutput[start_index:]
+        auroraOutput = auroraOutput.replace("send/recv: Non-blocking call failure: no buffer available for sending.\n", "")
+        end_index =  auroraOutput.find("recv:Connection was broken.")
+        if end_index != -1:
+             auroraOutput = auroraOutput[:end_index]
+        end_index =  auroraOutput.find("recv:Non-blocking call failure: no data available for reading")
+        if end_index != -1:
+             auroraOutput = auroraOutput[:end_index]
+        lines = auroraOutput.strip().split("\n")
+        lines = [line for line in lines if line.strip() != '']
+        lines = lines[1:] # Remove the first line containing "new connection...."
+        columns = lines[0].split(",")
+    
+        # Extract the relevant information
+        data = [line.split(",") for line in lines[1:]]
+        data = data[1:] #Remove first data point containing uniitialised values
+
+        data = [[float(val) for val in sublist] for sublist in data]
+        # Create a pandas DataFrame
+        df = pd.DataFrame(data, columns=columns)
+        # Convert columns to appropriate types
+        df["time"] = df["time"] / 1000000
+        df["time"] = df["time"] + offset
+    else:
+        if case == 'client':
+            df = pd.DataFrame([], columns=['time','bandwidth','rtt','sent','lost','retr'])
+        elif case == 'server':
+            df = pd.DataFrame([], columns=['time','bandwidth'])
+
+    return df
+

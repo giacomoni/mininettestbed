@@ -41,7 +41,11 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
 
     em.configure_network()
     em.configure_traffic()
-    em.set_monitors(['tcp_probe', 's1-eth1', 's2-eth2'])
+    monitors = ['s1-eth1', 's2-eth2']
+    if protocol != 'aurora':
+        monitors.append('tcp_probe')
+        
+    em.set_monitors(monitors)
     em.run()
     em.dump_info()
     net.stop()

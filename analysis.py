@@ -30,7 +30,6 @@ def process_raw_outputs(path):
             # Convert receiver output into csv
             df = parse_iperf_json(path+"/%s_output.txt" % receiver, flow[-2])
             df.to_csv("%s/%s.csv" % (csv_path, receiver), index=False)
-            print("Address for probe is: %s:%s" % (receiver_ip, port))
             probe_df = parse_tcp_probe_output(path + "/tcp_probe.txt", '%s:%s' % (receiver_ip, port), key='destination')
             probe_df.to_csv("%s/%s_probe.csv" % (csv_path, sender),index=False)
 
@@ -47,6 +46,15 @@ def process_raw_outputs(path):
 
             probe_df = parse_tcp_probe_output(path + "/tcp_probe.txt", '%s:%s' % (sender_ip, port),  key='source')
             probe_df.to_csv("%s/%s_probe.csv" % (csv_path, sender),index=False)
+
+        elif flow[-1] == 'aurora':
+            # Convert sender output into csv
+            df = parse_aurora_output(path+"/%s_output.txt" % sender, flow[-2])
+            df.to_csv("%s/%s.csv" %  (csv_path, sender), index=False)
+
+            # Convert receiver output into csv
+            df = parse_aurora_output(path+"/%s_output.txt" % receiver, flow[-2])
+            df.to_csv("%s/%s.csv" %  (csv_path, receiver),index=False)
 
 
 if __name__ == "__main__":

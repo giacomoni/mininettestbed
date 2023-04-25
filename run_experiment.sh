@@ -54,9 +54,9 @@
 # sudo python experiment.py 100 10 5 cubic 2
 
 
-PROTOCOLS="orca cubic"
-AQMS="fq fq_codel codel fifo"
-RUNS="1 2 3"
+PROTOCOLS="aurora"
+AQMS="fifo"
+RUNS="1"
 
 for aqm in $AQMS
 do

@@ -22,3 +22,5 @@ class DumbellTopo(Topo):
 
     def __str__(self):
         return "DumbellTopo(n=%d)" % self.n
+
+topos = { 'mytopo': DumbellTopo }
