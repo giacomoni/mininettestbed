@@ -20,7 +20,7 @@ def monitor_qlen(iface, interval_sec = 1, path = default_dir):
     f.close()
     while 1:
         p = Popen(cmd, shell=True, stdout=PIPE)
-        output = p.stdout.read()
+        output = p.stdout.read().decode('utf-8')
         tmp = ''
         matches_queued = pat_queued.findall(output)
         matches_dropped = pat_dropped.findall(output)

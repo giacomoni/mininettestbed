@@ -176,7 +176,7 @@ class Emulation:
             
             mkdirp(self.path)
             with open( '%s/%s_output.txt' % (self.path, node_name), 'w') as fout:
-                fout.write(output)
+                fout.write(output.decode('utf-8'))
         
         for monitor in self.qmonitors:
             if monitor is not None:
