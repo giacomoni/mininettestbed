@@ -76,7 +76,7 @@ if __name__ == "__main__":
                 qsize_in_bytes = qmult * bdp_in_bytes
                 runs = pd.DataFrame([], columns=COLUMNS)
                 for run in RUNS:
-                    path = "/home/luca/mininetproject/method%s/Dumbell_%smbit_%sms_%spkts_%stcpbuf_%s/run%s" % (method,bw,delay, int(qsize_in_bytes/1500), 0, 'cubic', run)
+                    path = "/its/home/lg317/mininetproject/method%s/Dumbell_%smbit_%sms_%spkts_%stcpbuf_%s/run%s" % (method,bw,delay, int(qsize_in_bytes/1500), 0, 'cubic', run)
                     #  Get max srtt of first flow
                     max_srtt = pd.read_csv(path+"/csvs/c1_probe.csv", index_col = False)['srtt'].max()/1000
                     max_cwnd = pd.read_csv(path+"/csvs/c1_probe.csv", index_col = False)['cwnd'].max()
@@ -98,5 +98,5 @@ if __name__ == "__main__":
                 df_mean = pd.concat([df_mean, runs.mean().to_frame().T])
                 df_std = pd.concat([df_std,  runs.std().to_frame().T])
 
-        df_mean.to_csv("/home/luca/mininetproject/method%s/mean.csv" % (method))
-        df_std.to_csv("/home/luca/mininetproject/method%s/std.csv" % (method))
+        df_mean.to_csv("/its/home/lg317/mininetproject/method%s/mean.csv" % (method))
+        df_std.to_csv("/its/home/lg317/mininetproject/method%s/std.csv" % (method))
