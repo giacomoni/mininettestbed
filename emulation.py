@@ -147,7 +147,7 @@ class Emulation:
                 self.call_first.append(Command(command, params, None))
 
                 # Create client start up call
-                params = (source_node,destination,duration,"/home/luca/pcc_saved_models/model_B")
+                params = (source_node,destination,duration,"/home/luca/pcc_saved_models/icml_paper_model")
                 command = self.start_aurora_client
                 self.call_second.append(Command(command, params, start_time - previous_start_time))
             else:
