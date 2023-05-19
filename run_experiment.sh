@@ -1,75 +1,173 @@
 #!/bin/bash
 
 
-
-# sudo python experiment.py 10 10 1 cubic 1
-# sudo python experiment.py 10 10 1 orca 1
-# sudo python experiment.py 100 10 1 orca 1
-# sudo python experiment.py 100 10 1 cubic 1   
-
-# sudo python experiment.py 10 10 2 orca 1
-# sudo python experiment.py 10 10 2 cubic 1
-# sudo python experiment.py 100 10 2 orca 1
-# sudo python experiment.py 100 10 2 cubic 1
-
-# sudo python experiment.py 10 10 3 orca 1
-# sudo python experiment.py 10 10 3 cubic 1
-# sudo python experiment.py 100 10 3 orca 1
-# sudo python experiment.py 100 10 3 cubic 1
-
-# sudo python experiment.py 10 10 4 orca 1
-# sudo python experiment.py 10 10 4 cubic 1
-# sudo python experiment.py 100 10 4 orca 1
-# sudo python experiment.py 100 10 4 cubic 1
-
-# sudo python experiment.py 10 10 5 orca 1
-# sudo python experiment.py 10 10 5 cubic 1
-# sudo python experiment.py 100 10 5 orca 1
-# sudo python experiment.py 100 10 5 cubic 1
+# PROTOCOLS="orca aurora cubic"
+# BANDWIDTHS="100"
+# DELAYS="41"
+# RUNS="1 2 3 4 5"  
+# LOSS="0.02 0.04 0.06 0.08 0.1 0.2 0.4 0.6 0.8 1 2 4"
 
 
-# sudo python experiment.py 10 10 1 orca 2
-# sudo python experiment.py 10 10 1 cubic 2
-# sudo python experiment.py 100 10 1 orca 2
-# sudo python experiment.py 100 10 1 cubic 2
-
-# sudo python experiment.py 10 10 2 orca 2
-# sudo python experiment.py 10 10 2 cubic 2
-# sudo python experiment.py 100 10 2 orca 2
-# sudo python experiment.py 100 10 2 cubic 2
-
-# sudo python experiment.py 10 10 3 orca 2
-# sudo python experiment.py 10 10 3 cubic 2
-# sudo python experiment.py 100 10 3 orca 2
-# sudo python experiment.py 100 10 3 cubic 2
-
-# sudo python experiment.py 10 10 4 orca 2
-# sudo python experiment.py 10 10 4 cubic 2
-# sudo python experiment.py 100 10 4 orca 2
-# sudo python experiment.py 100 10 4 cubic 2
-
-# sudo python experiment.py 10 10 5 orca 2
-# sudo python experiment.py 10 10 5 cubic 2
-# sudo python experiment.py 100 10 5 orca 2
-# sudo python experiment.py 100 10 5 cubic 2
+# for bw in $BANDWIDTHS
+# do
+# for del in $DELAYS
+# do
+# for loss in $LOSS
+# do
+#     for protocol in $PROTOCOLS
+#     do
+#         for run in $RUNS
+#         do
+#             sudo python efficiency_one_flow_loss.py $del $bw 1 $protocol $run fifo $loss
+#         done
+#     done
+#     done
+#     done
+# done
 
 
-PROTOCOLS="aurora"
-AQMS="fifo"
-RUNS="1"
+# PROTOCOLS="orca aurora cubic"
+# BANDWIDTHS="100"
+# DELAYS="10 20 30 40 50 60 70 80 90 100"
+# RUNS="1 2 3 4 5"  
 
-for aqm in $AQMS
-do
-    for protocol in $PROTOCOLS
-    do
-        for run in $RUNS
-        do
-            sudo python experiment.py 10 50 1 $protocol $run $aqm
-            sudo python experiment.py 100 50 1 $protocol $run $aqm
-            sudo python experiment.py 10 50 2 $protocol  $run $aqm
-            sudo python experiment.py 100 50 2 $protocol $run $aqm
-        done
-    done
-done
+
+# for bw in $BANDWIDTHS
+# do
+# for del in $DELAYS
+# do
+
+#     for protocol in $PROTOCOLS
+#     do
+#         for run in $RUNS
+#         do
+#             sudo python efficiency_intra_rtt.py $del $bw 1 $protocol $run fifo
+#         done
+#     done
+#     done
+# done
+
+
+
+# PROTOCOLS="orca aurora cubic"
+# BANDWIDTHS="100"
+# DELAYS="41"
+# RUNS="1 2 3 4 5"  
+# QMULTS="0.02 0.04 0.06 0.08 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10"
+
+
+# for bw in $BANDWIDTHS
+# do
+# for del in $DELAYS
+# do
+# for qmult in $QMULTS
+# do
+#     for protocol in $PROTOCOLS
+#     do
+#         for run in $RUNS
+#         do
+#             sudo python efficiency_two_flows_on_cubic.py $del $bw $qmult $protocol $run fifo
+#         done
+#     done
+#     done
+#     done
+# done
+
+# PROTOCOLS="orca aurora cubic"
+# BANDWIDTHS="100"
+# DELAYS="10 20 30 40 50 60 70 80 90 100"
+# RUNS="1 2 3 4 5"  
+
+
+# for bw in $BANDWIDTHS
+# do
+# for del in $DELAYS
+# do
+
+#     for protocol in $PROTOCOLS
+#     do
+#         for run in $RUNS
+#         do
+#             sudo python efficiency_intra_rtt_2.py $del $bw 0.1 $protocol $run fifo
+#         done
+#     done
+#     done
+# done
+
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="40 50 60 70 80 90 100"
+#RUNS="1 2 3 4 5"  
+
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python efficiency_intra_rtt_3.py $del $bw 10 $protocol $run fifo
+#        done
+#    done
+#    done
+#done
+
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="10 100"
+#RUNS="1 2 3 4 5"  
+#QMULTS="0.1 1 10"
+#FLOWS='4 3 2'
+
+
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_async.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#done
+
+PROTOCOLS="orca aurora cubic"
+BANDWIDTHS="100"
+DELAYS="10 20 30 "
+# RUNS="1 2 3 4 5"  
+# LOSS="0.02 0.04 0.06 0.08 0.1 0.2 0.4 0.6 0.8 1 2 4"
+
+
+# for bw in $BANDWIDTHS
+# do
+# for del in $DELAYS
+# do
+# for loss in $LOSS
+# do
+#     for protocol in $PROTOCOLS
+#     do
+#         for run in $RUNS
+#         do
+#             sudo python efficiency_one_flow_loss.py $del $bw 1 $protocol $run fifo $loss
+#         done
+#     done
+#     done
+#     done
+# done
+
+
+
+
 
 

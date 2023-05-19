@@ -29,8 +29,8 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
 
     net.start()
 
-    network_config = [NetworkConf('s1', 's2', None, 2*delay, 3*bdp_in_bytes, False, 'fifo'),
-                      NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False, aqm)]
+    network_config = [NetworkConf('s1', 's2', None, 2*delay, 3*bdp_in_bytes, False, 'fifo', None),
+                      NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False, aqm, None)]
     
     traffic_config = [TrafficConf('c1', 'x1', 0, 60, protocol)]
                     #   TrafficConf('c2', 'x2', 25, 75, protocol),

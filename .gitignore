@@ -2,3 +2,6 @@
 results/*
 *.zip
 rl_logging
+*.txt
+plots
+results*

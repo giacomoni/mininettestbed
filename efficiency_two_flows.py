@@ -29,13 +29,13 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
 
     net.start()
 
-    network_config = [NetworkConf('s1', 's2', None, 2*delay, 3*bdp_in_bytes, False, 'fifo'),
-                      NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False, aqm)]
+    network_config = [NetworkConf('s1', 's2', None, 2*delay, 3*bdp_in_bytes, False, 'fifo', None),
+                      NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False, aqm, None)]
     
-    traffic_config = [TrafficConf('c1', 'x1', 0, 60, protocol)]
+    traffic_config = [TrafficConf('c1', 'x1', 0, 100, protocol),
                     #   TrafficConf('c2', 'x2', 25, 75, protocol),
                     #   TrafficConf('c3', 'x3', 50, 50, protocol),
-                    #   TrafficConf('c4', 'x4', 75, 25, protocol)]
+                      TrafficConf('c2', 'x2', 0, 100, protocol)]
     
     em = Emulation(net, network_config, traffic_config, path)
 
@@ -58,7 +58,7 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
 if __name__ == '__main__':
 
     topology = 'Dumbell'
-    params = {'n':1}
+    params = {'n':2}
     delay = int(sys.argv[1])
     bw = int(sys.argv[2])
     qmult = float(sys.argv[3])

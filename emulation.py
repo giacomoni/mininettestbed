@@ -4,17 +4,17 @@ from multiprocessing import Process
 import time
 import json
 
-
-
-
-
 class Emulation:
     def __init__(self, network, network_config = None, traffic_config = None, path='.'):
         self.network = network
         self.network_config = network_config
         self.traffic_config = traffic_config
-       
         
+        # Lists used to run systats
+        self.sending_nodes = []
+        self.receiving_nodes = []
+
+        # 
         self.waitoutput = []
         self.call_first = []
         self.call_second = []
@@ -39,9 +39,9 @@ class Emulation:
         for config in self.network_config:
             links = self.network.linksBetween(self.network.get(config.node1), self.network.get(config.node2))
             for link in links:
-                self.configure_link(link, config.bw, config.delay, config.qsize, config.bidir, aqm=config.aqm)
+                self.configure_link(link, config.bw, config.delay, config.qsize, config.bidir, aqm=config.aqm, loss=config.loss)
     
-    def configure_link(self, link, bw, delay, qsize, bidir, aqm='fifo'):
+    def configure_link(self, link, bw, delay, qsize, bidir, aqm='fifo', loss=None):
         interfaces = [link.intf1, link.intf2]
         if bidir:
             n = 2
@@ -52,7 +52,10 @@ class Emulation:
             node = interfaces[i].node
             
             if delay and not bw:
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s ' % (intf_name, delay,  int(qsize/1500))
+                print("loss is %s" % loss)
+                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s' % (intf_name, delay,  100000)
+                if (loss is not None) and (float(loss) > 0):
+                    cmd += " loss %s%%" % (loss)
                 if aqm == 'fq_codel':
                     cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: fq_codel limit 17476 target 5ms interval 100ms flows 100" % (intf_name)
                 elif aqm == 'codel':
@@ -72,7 +75,7 @@ class Emulation:
 
             elif delay and bw:
                 burst = int(10*bw*(2**20)/250/8)
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc add dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s ' % (intf_name, delay,    int(qsize/1500), intf_name, bw, burst, qsize)
+                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc add dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s ' % (intf_name, delay,    100000, intf_name, bw, burst, qsize)
                 if aqm == 'fq_codel':
                     cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: fq_codel limit %s target 5ms interval 100ms flows 100" % (intf_name,     int(qsize/1500))
                 elif aqm == 'codel':
@@ -120,6 +123,9 @@ class Emulation:
             self.waitoutput.append(source_node)
             self.waitoutput.append(destination)
 
+            self.sending_nodes.append(source_node)
+            self.receiving_nodes.append(destination)
+
             if protocol == 'orca':
                 params = (source_node,duration)
                 command = self.start_orca_sender
@@ -166,6 +172,12 @@ class Emulation:
         if self.tcp_probe:
             start_tcpprobe(self.path,"tcp_probe.txt")
 
+        if self.sysstat:
+            start_sysstat(1,100,self.path) #TODO: change the count value to reflect the duration of the emulation
+            # run sysstat on each sender to collect ETCP and UDP stats
+            for node_name in self.sending_nodes:
+                start_sysstat(1,100,self.path, self.network.get(node_name))
+          
         for call in self.call_second:
             time.sleep(call.waiting_time)
             call.command(*call.params)
@@ -185,11 +197,18 @@ class Emulation:
         if self.tcp_probe:
             stop_tcpprobe()
 
+        if self.sysstat:
+            stop_sysstat(self.path, self.sending_nodes)
+
 
     def set_monitors(self, monitors, interval_sec=1):
         if "tcp_probe" in monitors:
             self.tcp_probe = True
             monitors.remove("tcp_probe")
+
+        if "sysstat" in monitors:
+            self.sysstat = True
+            monitors.remove("sysstat")
 
         for monitor in monitors:
             node, interface = monitor.split('-')
