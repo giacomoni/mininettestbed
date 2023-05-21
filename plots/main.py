@@ -407,7 +407,7 @@ ax = axes
 ax.errorbar(cubic_data.index, cubic_data['jain_goodput_20'], yerr=cubic_error['jain_goodput_20'],marker='x',linewidth=LINEWIDTH, label='cubic')
 ax.errorbar(orca_data.index,orca_data['jain_goodput_20'], yerr=orca_error['jain_goodput_20'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
 ax.errorbar(aurora_data.index,aurora_data['jain_goodput_20'], yerr=aurora_error['jain_goodput_20'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-ax.set(xscale='log',yscale='log',xlabel='Buffer Capacity (xBDP)', ylabel='Goodput Ratio')
+ax.set(xscale='log',yscale='log',xlabel='One way delay (ms)', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
@@ -425,7 +425,7 @@ ax = axes
 ax.errorbar(cubic_data.index,cubic_data['jain_goodput_total'], yerr=cubic_error['jain_goodput_total'],marker='x',linewidth=LINEWIDTH, label='cubic')
 ax.errorbar(orca_data.index,orca_data['jain_goodput_total'], yerr=orca_error['jain_goodput_total'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
 ax.errorbar(aurora_data.index,aurora_data['jain_goodput_total'], yerr=aurora_error['jain_goodput_total'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-ax.set(xscale='log',yscale='log',xlabel='Buffer Capacity (xBDP)', ylabel='Goodput Ratio')
+ax.set(xscale='log',yscale='log',xlabel='One way delay (ms)', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
