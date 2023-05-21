@@ -259,7 +259,7 @@ if __name__ == "__main__":
    # DELAYS = [41]
    # QMULTS = [1]
    # RUNS = [1, 2, 3, 4, 5]
-   # LOSSES = [0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 4]
+   LOSSES = [0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 4]
    #
    ROOT_PATH = "/home/luca/mininettestbed/results_one_flow_loss_2/fifo"
    PROTOCOLS = ['cubic', 'orca', 'aurora']
@@ -270,7 +270,7 @@ if __name__ == "__main__":
 
 
 
-   parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
+   parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, LOSSES, RUNS)
    # parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
 
    summary_data = pd.read_csv("summary_data.csv")
@@ -279,13 +279,13 @@ if __name__ == "__main__":
    cubic_summary_data = summary_data[summary_data['protocol'] == 'cubic']
    aurora_summary_data = summary_data[summary_data['protocol'] == 'aurora']
 
-   orca_data = orca_summary_data.groupby('delay').mean()
-   cubic_data = cubic_summary_data.groupby('delay').mean()
-   aurora_data = aurora_summary_data.groupby('delay').mean()
+   orca_data = orca_summary_data.groupby('loss').mean()
+   cubic_data = cubic_summary_data.groupby('loss').mean()
+   aurora_data = aurora_summary_data.groupby('loss').mean()
 
-   orca_error = orca_summary_data.groupby('delay').std()
-   cubic_error = cubic_summary_data.groupby('delay').std()
-   aurora_error = aurora_summary_data.groupby('delay').std()
+   orca_error = orca_summary_data.groupby('loss').std()
+   cubic_error = cubic_summary_data.groupby('loss').std()
+   aurora_error = aurora_summary_data.groupby('loss').std()
 
    LINEWIDTH = 1
    YLIM = [0, 100]
@@ -300,14 +300,14 @@ if __name__ == "__main__":
                linewidth=LINEWIDTH, label='orca', linestyle='--')
    ax.errorbar(aurora_data.index, aurora_data['avg_goodput'], yerr=aurora_error['avg_goodput'], marker='+',
                linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-   ax.set(ylim=YLIM, xscale='log', xlabel='One way delay (ms)', ylabel='Goodput (Mbps)')
+   ax.set(ylim=YLIM, xscale='log', xlabel='Loss rate (\%)', ylabel='Goodput (Mbps)')
    for axis in [ax.xaxis, ax.yaxis]:
       axis.set_major_formatter(ScalarFormatter())
 
    ax.legend()
    ax.grid()
 
-   plt.savefig('goodput_delay.png', dpi=720)
+   plt.savefig('goodput_loss.png', dpi=720)
 
    LINEWIDTH = 1
 
@@ -320,13 +320,13 @@ if __name__ == "__main__":
                label='orca', linestyle='--')
    ax.errorbar(aurora_data.index, aurora_data['avg_thr'], yerr=aurora_error['avg_thr'], marker='+', linewidth=LINEWIDTH,
                label='aurora', linestyle='-.')
-   ax.set(xscale='log', xlabel='One way delay (ms)', ylabel='Link utilisation (\%)')
+   ax.set(xscale='log', xlabel='Loss rate (\%)', ylabel='Link utilisation (\%)')
    for axis in [ax.xaxis, ax.yaxis]:
       axis.set_major_formatter(ScalarFormatter())
    ax.legend()
    ax.grid()
 
-   plt.savefig('link_util_delay.png', dpi=720)
+   plt.savefig('link_util_loss.png', dpi=720)
 
    LINEWIDTH = 1
 
@@ -339,13 +339,13 @@ if __name__ == "__main__":
                label='orca', linestyle='--')
    ax.errorbar(aurora_data.index, aurora_data['avg_retr'], yerr=aurora_error['avg_retr'], marker='+',
                linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-   ax.set(xscale='log', xlabel='One way delay (ms)', ylabel='Fraction of bandwidth used for retransmissions')
+   ax.set(xscale='log', xlabel='Loss rate (\%)', ylabel='Fraction of bandwidth used for retransmissions')
    for axis in [ax.xaxis, ax.yaxis]:
       axis.set_major_formatter(ScalarFormatter())
    ax.legend()
    ax.grid()
 
-   plt.savefig('norm_retr_rate_lin_scale_delay.png', dpi=720)
+   plt.savefig('norm_retr_rate_lin_scale_loss.png', dpi=720)
 
    LINEWIDTH = 1
 
@@ -358,13 +358,13 @@ if __name__ == "__main__":
                label='orca', linestyle='--')
    ax.errorbar(aurora_data.index, aurora_data['avg_retr'], yerr=aurora_error['avg_retr'], marker='+',
                linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-   ax.set(xscale='log', yscale='log', xlabel='One way delay (ms)', ylabel='Fraction of bandwidth used for retransmissions')
+   ax.set(xscale='log', yscale='log', xlabel='Loss rate (\%)', ylabel='Fraction of bandwidth used for retransmissions')
    for axis in [ax.xaxis, ax.yaxis]:
       axis.set_major_formatter(ScalarFormatter())
    ax.legend()
    ax.grid()
 
-   plt.savefig('norm_retr_rate_log_scale_delay.png', dpi=720)
+   plt.savefig('norm_retr_rate_log_scale_loss.png', dpi=720)
 
 LINEWIDTH = 1
 
@@ -375,14 +375,14 @@ ax = axes
 ax.errorbar(cubic_data.index,cubic_data['avg_srtt'], yerr=cubic_error['avg_srtt'],marker='x',linewidth=LINEWIDTH, label='cubic')
 ax.errorbar(orca_data.index,orca_data['avg_srtt'], yerr=orca_error['avg_srtt'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
 ax.errorbar(aurora_data.index,aurora_data['avg_srtt'], yerr=aurora_error['avg_srtt'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-ax.set(xscale='log', xlabel='One way delay (ms)', ylabel='Avg. RTT (ms)')
+ax.set(xscale='log', xlabel='Loss rate (\%)', ylabel='Avg. RTT (ms)')
 
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
 ax.grid()
 
-plt.savefig('avg_rtt_delay.png', dpi=720)
+plt.savefig('avg_rtt_loss.png', dpi=720)
 
 
 # LINEWIDTH = 1
