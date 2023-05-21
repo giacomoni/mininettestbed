@@ -18,7 +18,7 @@ def parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
             for mult in QMULTS:
                BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * delay * (10 ** -3) / 8)
                BDP_IN_PKTS = BDP_IN_BYTES / 1500
-                  for run in RUNS:
+               for run in RUNS:
                      PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
                      if os.path.exists(PATH + '/csvs/c1.csv'):
                         sender = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds)
