@@ -3,6 +3,6 @@ results/*
 *.zip
 rl_logging
 *.txt
-plots
+plots/*.png
 results*
 .idea
