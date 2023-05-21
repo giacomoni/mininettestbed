@@ -99,13 +99,13 @@ def parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
                            avg_retr = retr.mean()
                            std_retr = retr.std()
 
-                     data_entry = [protocol, bw, delay, mult, loss, run, avg_thr, avg_goodput, avg_srtt, std_thr, std_goodput,
+                     data_entry = [protocol, bw, delay, mult, run, avg_thr, avg_goodput, avg_srtt, std_thr, std_goodput,
                                    std_srtt, avg_retr, std_retr, efficiency_thr, efficiency_gdp, efficiency_rtt,
                                    efficiency_q_avg, efficiency_q_std]
                      data.append(data_entry)
 
    summary_data = pd.DataFrame(data,
-                               columns=['protocol', 'bandwidth', 'delay', 'qmult', 'loss', 'run', 'avg_thr', 'avg_goodput',
+                               columns=['protocol', 'bandwidth', 'delay', 'qmult', 'run', 'avg_thr', 'avg_goodput',
                                         'avg_srtt', 'std_thr', 'std_goodput', 'std_srtt', 'avg_retr', 'std_retr',
                                         'efficiency_thr', 'efficiency_gdp', 'efficiency_rtt', 'efficiency_q_avg',
                                         'efficiency_q_std'])
