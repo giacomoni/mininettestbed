@@ -130,7 +130,7 @@ def  parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
                for loss in LOSSES:
 
                   for run in RUNS:
-                     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
+                     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_%sloss_2flows_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),loss,protocol,run)
                      if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
                         sender1 = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds)
                         sender2 = pd.read_csv(PATH + '/csvs/c2.csv').tail(keep_last_seconds)
