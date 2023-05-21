@@ -7,7 +7,7 @@ import os
 from matplotlib.ticker import ScalarFormatter
 
 
-def parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
+def parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS,LOSSES, RUNS):
    data = []
    flow_duration = 60
    keep_last_seconds = 20
@@ -18,8 +18,9 @@ def parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
             for mult in QMULTS:
                BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * delay * (10 ** -3) / 8)
                BDP_IN_PKTS = BDP_IN_BYTES / 1500
-               for run in RUNS:
-                     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
+               for loss in LOSSES:
+                  for run in RUNS:
+                     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_%sloss_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),loss,protocol,run)
                      if os.path.exists(PATH + '/csvs/c1.csv'):
                         sender = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds)
 
@@ -99,13 +100,13 @@ def parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
                            avg_retr = retr.mean()
                            std_retr = retr.std()
 
-                     data_entry = [protocol, bw, delay, mult, run, avg_thr, avg_goodput, avg_srtt, std_thr, std_goodput,
+                     data_entry = [protocol, bw, delay, mult, loss, run, avg_thr, avg_goodput, avg_srtt, std_thr, std_goodput,
                                    std_srtt, avg_retr, std_retr, efficiency_thr, efficiency_gdp, efficiency_rtt,
                                    efficiency_q_avg, efficiency_q_std]
                      data.append(data_entry)
 
    summary_data = pd.DataFrame(data,
-                               columns=['protocol', 'bandwidth', 'delay', 'qmult', 'run', 'avg_thr', 'avg_goodput',
+                               columns=['protocol', 'bandwidth', 'delay', 'qmult', 'loss', 'run', 'avg_thr', 'avg_goodput',
                                         'avg_srtt', 'std_thr', 'std_goodput', 'std_srtt', 'avg_retr', 'std_retr',
                                         'efficiency_thr', 'efficiency_gdp', 'efficiency_rtt', 'efficiency_q_avg',
                                         'efficiency_q_std'])
