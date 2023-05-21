@@ -272,7 +272,7 @@ if __name__ == "__main__":
    # RUNS = [1, 2, 3, 4, 5]
    # LOSSES = [0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 4]
    #
-   ROOT_PATH = "/home/luca/mininettestbed/results_one_flow_loss_2/fifo"
+   ROOT_PATH = "/home/luca/mininettestbed/results_fairness_async_2/fifo"
    PROTOCOLS = ['cubic', 'orca', 'aurora']
    BWS = [100]
    DELAYS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
