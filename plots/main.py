@@ -285,19 +285,19 @@ if __name__ == "__main__":
    # parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, LOSSES, RUNS)
    parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
 
-   summary_data = pd.read_csv("summary_data.csv")
+   summary_data = pd.read_csv("summary_data.csv").dropna()
 
    orca_summary_data = summary_data[summary_data['protocol'] == 'orca']
    cubic_summary_data = summary_data[summary_data['protocol'] == 'cubic']
    aurora_summary_data = summary_data[summary_data['protocol'] == 'aurora']
 
-   orca_data = orca_summary_data.groupby('loss').mean()
-   cubic_data = cubic_summary_data.groupby('loss').mean()
-   aurora_data = aurora_summary_data.groupby('loss').mean()
+   orca_data = orca_summary_data.groupby('delay').mean()
+   cubic_data = cubic_summary_data.groupby('delay').mean()
+   aurora_data = aurora_summary_data.groupby('delay').mean()
 
-   orca_error = orca_summary_data.groupby('loss').std()
-   cubic_error = cubic_summary_data.groupby('loss').std()
-   aurora_error = aurora_summary_data.groupby('loss').std()
+   orca_error = orca_summary_data.groupby('delay').std()
+   cubic_error = cubic_summary_data.groupby('delay').std()
+   aurora_error = aurora_summary_data.groupby('delay').std()
 
 #    LINEWIDTH = 1
 #    YLIM = [0, 100]
