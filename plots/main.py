@@ -663,9 +663,8 @@ if __name__ == "__main__":
    LINEWIDTH = 1
 
    for i, protocol in enumerate(PROTOCOLS):
-      ax_tmp = axes[i]
       for run in RUNS:
-         ax = ax_tmp[run - 1]
+         ax = axes[run - 1][i]
          x1 = sending[protocol][run - 1]['c1']['time']
          x2 = sending[protocol][run - 1]['c2']['time']
 
@@ -685,6 +684,7 @@ if __name__ == "__main__":
             ax.set(ylabel='Sending Rate (Mbps)')
 
          ax.set(xlabel='time (s)')
+         ax.set_title('%s - Run %s' % (protocol, run))
 
          ax.grid()
 
