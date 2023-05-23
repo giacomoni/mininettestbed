@@ -369,6 +369,9 @@ def sending_rates_congestion_window(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS
                sender1['time'] = sender1['time'].apply(lambda x: float(x))
                sender2['time'] = sender2['time'].apply(lambda x: float(x))
 
+               sender1['bandwidth'] = sender1['bandwidth'].ewm(alpha=0.5).mean()
+               sender2['bandwidth'] = sender2['bandwidth'].ewm(alpha=0.5).mean()
+
          series['c1'] = sender1
          series['c2'] = sender2
 
@@ -678,15 +681,15 @@ if __name__ == "__main__":
             y1 = sending[protocol][run - 1]['c1']['bandwidth']
             y2 = sending[protocol][run - 1]['c2']['bandwidth']
 
-         ax.plot(x1, y1, linewidth=LINEWIDTH)
-         ax.plot(x2, y2, linewidth=LINEWIDTH)
+         ax.plot(x1, y1, linewidth=LINEWIDTH, alpha=0.5)
+         ax.plot(x2, y2, linewidth=LINEWIDTH, alpha=0.5)
          if protocol != 'aurora':
-            ax.set(ylabel='cwnd (pkts)', ylim=[0.1,10000], yscale='log')
+            ax.set(ylabel='cwnd (pkts)', ylim=[1,5000], yscale='log')
             ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
             ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
 
          else:
-            ax.set(ylabel='Send Rate (Mbps)', ylim=[0.1,10000], yscale='log')
+            ax.set(ylabel='Send Rate (Mbps)', ylim=[0,500], yscale='linear')
             ax.axhline(y=100, color='r', linestyle='--', alpha=0.5)
             ax.axhline(y=50, color='r', linestyle='--', alpha=0.5)
 
