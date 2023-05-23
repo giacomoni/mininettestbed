@@ -278,7 +278,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
       sums_runs = []
 
       for run in RUNS:
-         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
+         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
          if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
             receiver1 = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
             receiver2 = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
@@ -345,7 +345,7 @@ if __name__ == "__main__":
    # RUNS = [1, 2, 3, 4, 5]
    # LOSSES = [0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 4]
    #
-   ROOT_PATH = "/home/luca/mininettestbed/results_fairness_async_2/fifo"
+   ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
    PROTOCOLS = ['cubic', 'orca', 'aurora']
    BWS = [100]
    DELAYS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -509,7 +509,7 @@ ax.grid()
 plt.savefig('goodput_ratio.png', dpi=720)
 
 # Plot the efficiency, fairness over time (first 5)
-ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_async_2/fifo"
+ROOT_PATH =  "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAYS = [10,20,30,40,50]
@@ -560,7 +560,7 @@ plt.tight_layout()
 plt.savefig("first_five.png", dpi=720)
 
 # Plot the efficiency, fairness over time (last 5)
-ROOT_PATH = "/home/luca/mininettestbed/results_fairness_async_2/fifo"
+ROOT_PATH =  "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAYS = [60,70,80,90,100]
