@@ -130,7 +130,7 @@ def  parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
                for loss in LOSSES:
 
                   for run in RUNS:
-                     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_%sloss_2flows_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),loss,protocol,run)
+                     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
                      if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
                         sender1 = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds)
                         sender2 = pd.read_csv(PATH + '/csvs/c2.csv').tail(keep_last_seconds)
@@ -515,7 +515,7 @@ BW = 100
 DELAYS = [10,20,30,40,50]
 QMULT = 1
 RUNS = [1, 2, 3, 4, 5]
-SYNC = False
+SYNC = True
 
 
 
@@ -534,7 +534,7 @@ for i,delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Normalised Aggregate Goodput')
-      ax.set( ylim=[0, 1.25], xlim=[0,125])
+      ax.set( ylim=[0, 1.25], xlim=[0,100])
       ax.set_title('%s ms' % delay)
       ax.legend()
       ax.grid()
@@ -550,7 +550,7 @@ for i,delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,125], yscale='log')
+      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,100], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
@@ -566,7 +566,7 @@ BW = 100
 DELAYS = [60,70,80,90,100]
 QMULT = 1
 RUNS = [1, 2, 3, 4, 5]
-SYNC = False
+SYNC = True
 
 fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 4))
 
@@ -584,7 +584,7 @@ for i, delay in enumerate(DELAYS):
       if i == 0:
          ax.set(ylabel='Normalised Aggregate Goodput')
 
-      ax.set( ylim=[0, 1.25], xlim=[0,125])
+      ax.set( ylim=[0, 1.25], xlim=[0,100])
       ax.set_title('%s ms' % delay)
       ax.legend()
       ax.grid()
@@ -599,7 +599,7 @@ for i, delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,125], yscale='log')
+      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,100], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
