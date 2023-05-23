@@ -656,6 +656,8 @@ if __name__ == "__main__":
    DELAY = 60
    QMULT = 1
    RUNS = [1, 2, 3, 4, 5]
+   BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
+   BDP_IN_PKTS = BDP_IN_BYTES / 1500
 
    fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(10, 6))
 
@@ -679,9 +681,15 @@ if __name__ == "__main__":
          ax.plot(x1, y1, linewidth=LINEWIDTH)
          ax.plot(x2, y2, linewidth=LINEWIDTH)
          if protocol != 'aurora':
-            ax.set(ylabel='cwnd (pkts)', ylim=[0.1,2000], yscale='log')
+            ax.set(ylabel='cwnd (pkts)', ylim=[0.1,10000], yscale='log')
+            ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+            ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+
          else:
-            ax.set(ylabel='Send Rate (Mbps)', ylim=[0.1,500], yscale='log')
+            ax.set(ylabel='Send Rate (Mbps)', ylim=[0.1,10000], yscale='log')
+            ax.axhline(y=100, color='r', linestyle='--', alpha=0.5)
+            ax.axhline(y=50, color='r', linestyle='--', alpha=0.5)
+
 
          if run == 5:
             ax.set(xlabel='time (s)')
