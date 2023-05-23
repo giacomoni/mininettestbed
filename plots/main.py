@@ -312,16 +312,18 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                if len(receiver1[receiver1['time'] < 25]) > 0:
                  receiver_start = receiver1[receiver1['time'] <= 25]
                  receiver_end = receiver2[receiver2['time'] > 100]
+                 print('case 1')
                else:
                  receiver_start = receiver2[receiver2['time'] <= 25]
                  receiver_end = receiver1[receiver1['time'] > 100]
+                 print('case 2')
+
 
                receiver1 = receiver1.set_index('time')
                receiver2 = receiver2.set_index('time')
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
-               print(receiver_start)
-               print(receiver_end)
+
 
                sum_tmp = pd.concat([receiver_start/100,(receiver1+receiver2)/100, receiver_end/100])
                ratio_tmp =  pd.concat([receiver_start/receiver_start, receiver1 / receiver2, receiver_end/receiver_end])
@@ -548,8 +550,8 @@ for i,delay in enumerate(DELAYS):
       ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
-         ax.set(ylabel='Goodputs Ratio', yscale='log')
-      ax.set(xlabel='time (s)', ylim=[0, 100], xlim=[0,125])
+         ax.set(ylabel='Goodputs Ratio')
+      ax.set(xlabel='time (s)', ylim=[0.1, 100], xlim=[0,125], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
@@ -592,7 +594,9 @@ for i, delay in enumerate(DELAYS):
       err = ratios[protocol].std(axis=1)
       ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
       ax.fill_between(x, y - err, y + err, alpha=0.2)
-      ax.set(xlabel='time (s)', ylabel='Goodputs Ratio', yscale='linear')
+      if i == 0:
+         ax.set(ylabel='Goodputs Ratio')
+      ax.set(xlabel='time (s)', ylim=[0.1, 100], xlim=[0,125], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
