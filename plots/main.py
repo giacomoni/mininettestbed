@@ -321,16 +321,21 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
 
+
                sum_tmp = pd.concat([receiver_start/100,(receiver1+receiver2)/100, receiver_end/100])
                ratio_tmp =  pd.concat([receiver_start/receiver_start, receiver1 / receiver2, receiver_end/receiver_end])
 
+               print(sum_tmp)
+               print(ratio_tmp)
+
+               
                ratios_runs.append(ratio_tmp)
                sums_runs.append(sum_tmp)
 
       ratios[protocol] = pd.concat(ratios_runs, axis=1)
       sums[protocol] = pd.concat(sums_runs, axis=1)
 
-      return sums, ratios
+   return sums, ratios
 
 if __name__ == "__main__":
    # ROOT_PATH = "/home/luca/mininettestbed/results_one_flow_loss/fifo"
@@ -354,7 +359,9 @@ if __name__ == "__main__":
    # parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, LOSSES, RUNS)
    parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
 
-   summary_data = pd.read_csv("summary_data.csv").dropna()
+   summary_data = pd.read_csv("summary_data.csv")
+   summary_data[['avg_retr', 'std_retr']] = summary_data[['avg_retr', 'std_retr']].fillna(value=0)
+   summary_data = summary_data.dropna()
 
    orca_summary_data = summary_data[summary_data['protocol'] == 'orca']
    cubic_summary_data = summary_data[summary_data['protocol'] == 'cubic']
