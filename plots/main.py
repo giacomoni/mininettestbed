@@ -679,9 +679,9 @@ if __name__ == "__main__":
          ax.plot(x1, y1, linewidth=LINEWIDTH)
          ax.plot(x2, y2, linewidth=LINEWIDTH)
          if protocol != 'aurora':
-            ax.set(ylabel='cwnd (pkts)', ylim=[0,2000], yscale='log')
+            ax.set(ylabel='cwnd (pkts)', ylim=[0.1,2000], yscale='log')
          else:
-            ax.set(ylabel='Send Rate (Mbps)', ylim=[0,500], yscale='log')
+            ax.set(ylabel='Send Rate (Mbps)', ylim=[0.1,500], yscale='log')
 
          if run == 5:
             ax.set(xlabel='time (s)')
