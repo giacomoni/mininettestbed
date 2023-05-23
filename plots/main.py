@@ -263,6 +263,75 @@ def  parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
 
    summary_data.to_csv("summary_data.csv", index=None)
 
+
+def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=True):
+
+   ratios = {'cubic': None, 'orca': None, 'aurora': None}
+   sums = {'cubic': None, 'orca': None, 'aurora': None}
+
+   for protocol in PROTOCOLS:
+
+      BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
+      BDP_IN_PKTS = BDP_IN_BYTES / 1500
+
+      ratios_runs = []
+      sums_runs = []
+
+      for run in RUNS:
+         PATH = ROOT_PATH + f'/Dumbell_{BW}mbit_{DELAY}ms_{int(QMULT * BDP_IN_PKTS)}pkts_22tcpbuf_{protocol}/run{run}'
+         if os.path.exists(PATH + f'/csvs/x1.csv') and os.path.exists(PATH + f'/csvs/x2.csv'):
+            receiver1 = pd.read_csv(PATH + f'/csvs/x1.csv').reset_index(drop=True)
+            receiver2 = pd.read_csv(PATH + f'/csvs/x2.csv').reset_index(drop=True)
+
+            receiver1 = receiver1[['time', 'bandwidth']]
+            receiver2 = receiver2[['time', 'bandwidth']]
+
+            receiver1['time'] = receiver1['time'].apply(lambda x: int(float(x)))
+            receiver2['time'] = receiver2['time'].apply(lambda x: int(float(x)))
+
+            receiver1 = receiver1.drop_duplicates('time')
+            receiver2 = receiver2.drop_duplicates('time')
+
+            receiver1['bandwidth'] = receiver1['bandwidth'].ewm(alpha=0.5).mean()
+            receiver2['bandwidth'] = receiver2['bandwidth'].ewm(alpha=0.5).mean()
+
+            if sync:
+               receiver1 = receiver1[(receiver1['time'] > 0) & (receiver1['time'] <= 100)]
+               receiver2 = receiver2[(receiver2['time'] > 0) & (receiver2['time'] <= 100)]
+
+               receiver1 = receiver1.set_index('time')
+               receiver2 = receiver2.set_index('time')
+
+               ratios_runs.append(receiver2 / receiver1)
+               sums_runs.append((receiver1 + receiver2) / 100)
+            else:
+               receiver1 = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)]
+               receiver2 = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)]
+
+               # Find which flow starts first
+               if len(receiver1[receiver1['time'] < 25]) > 0:
+                 receiver_start = receiver1[receiver1['time'] <= 25]
+                 receiver_end = receiver2[receiver2['time'] > 100]
+               else:
+                 receiver_start = receiver2[receiver2['time'] <= 25]
+                 receiver_end = receiver1[receiver1['time'] > 100]
+
+               receiver1 = receiver1.set_index('time')
+               receiver2 = receiver2.set_index('time')
+               receiver_start = receiver_start.set_index('time')
+               receiver_end = receiver_end.set_index('time')
+
+               sum_tmp = pd.concat([receiver_start/100,(receiver1+receiver2)/100, receiver_end/100])
+               ratio_tmp =  pd.concat([receiver_start/receiver_start, receiver1 / receiver2, receiver_end/receiver_end])
+
+               ratios_runs.append(ratio_tmp)
+               sums_runs.append(sum_tmp)
+
+      ratios[protocol] = pd.concat(ratios_runs, axis=1)
+      sums[protocol] = pd.concat(sums_runs, axis=1)
+
+      return sums, ratios
+
 if __name__ == "__main__":
    # ROOT_PATH = "/home/luca/mininettestbed/results_one_flow_loss/fifo"
    # PROTOCOLS = ['cubic', 'orca', 'aurora']
@@ -413,7 +482,7 @@ for axis in [ax.xaxis, ax.yaxis]:
 ax.legend()
 ax.grid()
 
-plt.savefig('jain_friendly_20.png', dpi=720)
+plt.savefig('goodput_ratio_20.png', dpi=720)
 
 LINEWIDTH = 1
 
@@ -431,7 +500,102 @@ for axis in [ax.xaxis, ax.yaxis]:
 ax.legend()
 ax.grid()
 
-plt.savefig('jain_frindly_total.png', dpi=720)
+plt.savefig('goodput_ratio.png', dpi=720)
+
+# Plot the efficiency, fairness over time (first 5)
+ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_async_2/fifo"
+PROTOCOLS = ['cubic', 'orca', 'aurora']
+BW = 100
+DELAYS = [10,20,30,40,50]
+QMULT = 1
+RUNS = [1, 2, 3, 4, 5]
+SYNC = False
+
+
+
+fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(10,4))
+
+for i,delay in enumerate(DELAYS):
+   sums, ratios = fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, delay, QMULT, RUNS, SYNC)
+   # Sum plot
+   ax = axes[0][i]
+   LINEWIDTH = 1
+   for protocol in PROTOCOLS:
+      x = sums[protocol].index
+      y = sums[protocol].mean(axis=1)
+      err = sums[protocol].std(axis=1)
+      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+      ax.fill_between(x, y - err, y + err, alpha=0.2)
+      ax.set(xlabel='time (s)', ylabel='Normalised Aggregate Goodput')
+      ax.legend()
+
+   # Fairness plot
+   ax = axes[1][i]
+   for protocol in PROTOCOLS:
+      x = ratios[protocol].index
+      y = ratios[protocol].mean(axis=1)
+      err = ratios[protocol].std(axis=1)
+      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+      ax.fill_between(x, y - err, y + err, alpha=0.2)
+      ax.set(xlabel='time (s)', ylabel='Goodputs Ratio', yscale='linear')
+      for axis in [ax.xaxis, ax.yaxis]:
+         axis.set_major_formatter(ScalarFormatter())
+      ax.legend()
+      ax.grid()
+
+
+plt.savefig("first_five.png", dpi=720)
+
+# Plot the efficiency, fairness over time (last 5)
+ROOT_PATH = "/home/luca/mininettestbed/results_fairness_async_2/fifo"
+PROTOCOLS = ['cubic', 'orca', 'aurora']
+BW = 100
+DELAYS = [60,70,80,90,100]
+QMULT = 1
+RUNS = [1, 2, 3, 4, 5]
+SYNC = False
+
+fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(10, 4))
+
+for i, delay in enumerate(DELAYS):
+   sums, ratios = fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, delay, QMULT, RUNS, SYNC)
+   # Sum plot
+   ax = axes[0][i]
+   LINEWIDTH = 1
+   for protocol in PROTOCOLS:
+      x = sums[protocol].index
+      y = sums[protocol].mean(axis=1)
+      err = sums[protocol].std(axis=1)
+      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+      ax.fill_between(x, y - err, y + err, alpha=0.2)
+      ax.set(xlabel='time (s)', ylabel='Normalised Aggregate Goodput')
+      ax.legend()
+      ax.title.set_text('%s ms' % delay)
+
+   # Fairness plot
+   ax = axes[1][i]
+   for protocol in PROTOCOLS:
+      x = ratios[protocol].index
+      y = ratios[protocol].mean(axis=1)
+      err = ratios[protocol].std(axis=1)
+      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+      ax.fill_between(x, y - err, y + err, alpha=0.2)
+      ax.set(xlabel='time (s)', ylabel='Goodputs Ratio', yscale='linear')
+      for axis in [ax.xaxis, ax.yaxis]:
+         axis.set_major_formatter(ScalarFormatter())
+      ax.legend()
+      ax.grid()
+
+plt.savefig("last_five.png", dpi=720)
+
+
+
+
+
+
+
+
+
 
 
 
