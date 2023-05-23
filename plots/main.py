@@ -681,15 +681,15 @@ if __name__ == "__main__":
             y1 = sending[protocol][run - 1]['c1']['bandwidth']
             y2 = sending[protocol][run - 1]['c2']['bandwidth']
 
-         ax.plot(x1, y1, linewidth=LINEWIDTH, alpha=0.5)
-         ax.plot(x2, y2, linewidth=LINEWIDTH, alpha=0.5)
+         ax.plot(x1, y1, linewidth=LINEWIDTH, alpha=0.75)
+         ax.plot(x2, y2, linewidth=LINEWIDTH, alpha=0.75)
          if protocol != 'aurora':
-            ax.set(ylabel='cwnd (pkts)', ylim=[1,5000], yscale='log')
+            ax.set(ylabel='cwnd (pkts)', ylim=[10,2000], yscale='log')
             ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
             ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
 
          else:
-            ax.set(ylabel='Send Rate (Mbps)', ylim=[0,500], yscale='linear')
+            ax.set(ylabel='Send Rate (Mbps)', ylim=[0,200], yscale='linear')
             ax.axhline(y=100, color='r', linestyle='--', alpha=0.5)
             ax.axhline(y=50, color='r', linestyle='--', alpha=0.5)
 
