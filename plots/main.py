@@ -656,7 +656,7 @@ if __name__ == "__main__":
    ROOT_PATH =  "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
    PROTOCOLS = ['cubic', 'orca', 'aurora']
    BW = 100
-   DELAY = 90
+   DELAY = 10
    QMULT = 1
    RUNS = [1, 2, 3, 4, 5]
    BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
