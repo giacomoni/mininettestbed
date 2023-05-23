@@ -687,8 +687,7 @@ if __name__ == "__main__":
             ax.set(xlabel='time (s)')
          ax.set_title('%s - Run %s' % (protocol, run))
 
-         for axis in [ax.xaxis, ax.yaxis]:
-            axis.set_major_formatter(ScalarFormatter())
+
          ax.grid()
 
    plt.tight_layout()
