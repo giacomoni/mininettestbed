@@ -346,7 +346,7 @@ def sending_rates_congestion_window(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS
 
       for run in RUNS:
          series = {'c1': None, 'c2': None}
-         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (
+         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (
          BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
          if protocol != 'aurora':
             if os.path.exists(PATH + '/csvs/c1_probe.csv') and os.path.exists(PATH + '/csvs/c2_probe.csv'):
@@ -653,7 +653,7 @@ if __name__ == "__main__":
 # plt.savefig("last_five.png", dpi=720)
 
 # Plot congestion window, or sending rate
-   ROOT_PATH =  "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
+   ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_async_2/fifo"
    PROTOCOLS = ['cubic', 'orca', 'aurora']
    BW = 100
    DELAY = 10
