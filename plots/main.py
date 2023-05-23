@@ -686,6 +686,8 @@ if __name__ == "__main__":
          if protocol != 'aurora':
             ax.set(ylabel='cwnd (pkts)', ylim=[10,3000], yscale='log')
             ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+            ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+
 
          else:
             ax.set(ylabel='Send Rate (Mbps)', ylim=[0,200], yscale='linear')
