@@ -684,8 +684,7 @@ if __name__ == "__main__":
          ax.plot(x1, y1, linewidth=LINEWIDTH, alpha=0.75)
          ax.plot(x2, y2, linewidth=LINEWIDTH, alpha=0.75)
          if protocol != 'aurora':
-            ax.set(ylabel='cwnd (pkts)', ylim=[10,2000], yscale='log')
-            ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+            ax.set(ylabel='cwnd (pkts)', ylim=[10,3000], yscale='log')
             ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
 
          else:
