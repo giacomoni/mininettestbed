@@ -305,28 +305,26 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                ratios_runs.append(receiver2 / receiver1)
                sums_runs.append((receiver1 + receiver2) / 100)
             else:
-               receiver1 = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)]
-               receiver2 = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)]
+               receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)]
+               receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)]
 
                # Find which flow starts first
                if len(receiver1[receiver1['time'] < 25]) > 0:
                  receiver_start = receiver1[receiver1['time'] <= 25]
                  receiver_end = receiver2[receiver2['time'] > 100]
-                 print('case 1')
                else:
                  receiver_start = receiver2[receiver2['time'] <= 25]
                  receiver_end = receiver1[receiver1['time'] > 100]
-                 print('case 2')
 
 
-               receiver1 = receiver1.set_index('time')
-               receiver2 = receiver2.set_index('time')
+               receiver1_middle = receiver1_middle.set_index('time')
+               receiver2_middle = receiver2_middle.set_index('time')
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
 
 
-               sum_tmp = pd.concat([receiver_start/100,(receiver1+receiver2)/100, receiver_end/100])
-               ratio_tmp =  pd.concat([receiver_start/receiver_start, receiver1 / receiver2, receiver_end/receiver_end])
+               sum_tmp = pd.concat([receiver_start/100,(receiver1_middle+receiver2_middle)/100, receiver_end/100])
+               ratio_tmp =  pd.concat([receiver_start/receiver_start, receiver1_middle / receiver2_middle, receiver_end/receiver_end])
 
 
 
