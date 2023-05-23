@@ -278,7 +278,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
       sums_runs = []
 
       for run in RUNS:
-         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
+         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
          if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
             receiver1 = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
             receiver2 = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
@@ -328,7 +328,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                print(sum_tmp)
                print(ratio_tmp)
 
-               
+
                ratios_runs.append(ratio_tmp)
                sums_runs.append(sum_tmp)
 
