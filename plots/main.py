@@ -657,7 +657,7 @@ if __name__ == "__main__":
    QMULT = 1
    RUNS = [1, 2, 3, 4, 5]
 
-   fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(5, 15))
+   fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(15, 4))
 
    sending = sending_rates_congestion_window(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS)
    LINEWIDTH = 1
