@@ -534,7 +534,8 @@ for i,delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Normalised Aggregate Goodput')
-      ax.set( ylim=[0, 1.25], xlim=[0,125])
+      ax.set( ylim=[0, 1.25], xlim=[0,150])
+      ax.set_title('%s ms' % delay)
       ax.legend()
       ax.grid()
 
@@ -549,7 +550,7 @@ for i,delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', ylim=[0.1, 100], xlim=[0,125], yscale='log')
+      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,150], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
@@ -580,7 +581,11 @@ for i, delay in enumerate(DELAYS):
       err = sums[protocol].std(axis=1)
       ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
       ax.fill_between(x, y - err, y + err, alpha=0.2)
-      ax.set(xlabel='time (s)', ylabel='Normalised Aggregate Goodput')
+      if i == 0:
+         ax.set(ylabel='Normalised Aggregate Goodput')
+
+      ax.set( ylim=[0, 1.25], xlim=[0,150])
+      ax.set_title('%s ms' % delay)
       ax.legend()
       ax.grid()
 
@@ -594,7 +599,7 @@ for i, delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', ylim=[0.1, 100], xlim=[0,125], yscale='log')
+      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,150], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
