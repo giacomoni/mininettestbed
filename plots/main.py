@@ -650,46 +650,46 @@ if __name__ == "__main__":
 # plt.savefig("last_five.png", dpi=720)
 
 # Plot congestion window, or sending rate
-ROOT_PATH =  "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
-PROTOCOLS = ['cubic', 'orca', 'aurora']
-BW = 100
-DELAY = 60
-QMULT = 1
-RUNS = [1, 2, 3, 4, 5]
+   ROOT_PATH =  "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
+   PROTOCOLS = ['cubic', 'orca', 'aurora']
+   BW = 100
+   DELAY = 60
+   QMULT = 1
+   RUNS = [1, 2, 3, 4, 5]
 
-fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(5, 15))
+   fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(5, 15))
 
-sending = sending_rates_congestion_window(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS)
-LINEWIDTH = 1
+   sending = sending_rates_congestion_window(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS)
+   LINEWIDTH = 1
 
-for i, protocol in enumerate(PROTOCOLS):
-   ax_tmp = axes[i]
-   for run in RUNS:
-      ax = ax_tmp[run - 1]
-      x1 = sending[protocol][run - 1]['c1']['time']
-      x2 = sending[protocol][run - 1]['c2']['time']
+   for i, protocol in enumerate(PROTOCOLS):
+      ax_tmp = axes[i]
+      for run in RUNS:
+         ax = ax_tmp[run - 1]
+         x1 = sending[protocol][run - 1]['c1']['time']
+         x2 = sending[protocol][run - 1]['c2']['time']
 
-      if protocol != 'aurora':
-         y1 = sending[protocol][run - 1]['c1']['cwnd']
-         y2 = sending[protocol][run - 1]['c2']['cwnd']
+         if protocol != 'aurora':
+            y1 = sending[protocol][run - 1]['c1']['cwnd']
+            y2 = sending[protocol][run - 1]['c2']['cwnd']
 
-      else:
-         y1 = sending[protocol][run - 1]['c1']['bandwidth']
-         y2 = sending[protocol][run - 1]['c2']['bandwidth']
+         else:
+            y1 = sending[protocol][run - 1]['c1']['bandwidth']
+            y2 = sending[protocol][run - 1]['c2']['bandwidth']
 
-      ax.plot(x1, y1, linewidth=LINEWIDTH)
-      ax.plot(x2, y2, linewidth=LINEWIDTH)
-      if protocol != 'aurora':
-         ax.set(ylabel='cwnd (pkts)')
-      else:
-         ax.set(ylabel='Sending Rate (Mbps)')
+         ax.plot(x1, y1, linewidth=LINEWIDTH)
+         ax.plot(x2, y2, linewidth=LINEWIDTH)
+         if protocol != 'aurora':
+            ax.set(ylabel='cwnd (pkts)')
+         else:
+            ax.set(ylabel='Sending Rate (Mbps)')
 
-      ax.set(xlabel='time (s)')
+         ax.set(xlabel='time (s)')
 
-      ax.grid()
+         ax.grid()
 
-plt.tight_layout()
-plt.savefig("sending.png", dpi=720)
+   plt.tight_layout()
+   plt.savefig("sending.png", dpi=720)
 
 
 
