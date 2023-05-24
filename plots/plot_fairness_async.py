@@ -51,18 +51,18 @@ for protocol in PROTOCOLS:
             receiver_total = pd.read_csv(PATH + '/csvs/x%s.csv' % (n+1)).reset_index(drop=True)
             receiver_total = receiver_total[['time', 'bandwidth']]
             receiver_total['time'] = receiver_total['time'].apply(lambda x: int(float(x)))
+            receiver_total['bandwidth'] = receiver_total['bandwidth'].ewm(alpha=0.5).mean()
 
             receiver_total = receiver_total[(receiver_total['time'] >= (start_time+n*25)) & (receiver_total['time'] <= (end_time+n*25))]
             receiver_total = receiver_total.drop_duplicates('time')
             receiver_total.set_index('time')
             receivers[n+1].append(receiver_total)
-            print(receiver_total)
 
    # For each flow, receivers contains a list of dataframes with a time and bandwidth column. These dataframes SHOULD have
    # exactly the same index. Now I can concatenate and compute mean and std
-   print(len(receivers[1]))
-   print(len(receivers[2]))
    for n in range(FLOWS):
+      for df in receivers[n+1]:
+         print(len(df))
       data[protocol][n+1]['mean'] = pd.concat(receivers[n+1], axis=1).mean(axis=1)
       data[protocol][n+1]['std'] = pd.concat(receivers[n+1], axis=1).std(axis=1)
       data[protocol][n + 1].index = pd.concat(receivers[n+1], axis=1).index
