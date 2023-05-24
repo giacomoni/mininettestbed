@@ -16,20 +16,21 @@ FLOWS = 2
 
 
 data = {'cubic':
-           {1: {'mean': None, 'std': None},
-            2: {'mean': None, 'std': None},
-            3: {'mean': None, 'std': None},
-            4: {'mean': None, 'std': None}},
+           {1: pd.DataFrame([], columns=['time','mean', 'std']),
+            2: pd.DataFrame([], columns=['time','mean', 'std']),
+            3: pd.DataFrame([], columns=['time','mean', 'std']),
+            4: pd.DataFrame([], columns=['time','mean', 'std'])},
         'orca':
-           {1: {'mean': None, 'std': None},
-            2: {'mean': None, 'std': None},
-            3: {'mean': None, 'std': None},
-            4: {'mean': None, 'std': None}},
+           {1: pd.DataFrame([], columns=['time', 'mean', 'std']),
+            2: pd.DataFrame([], columns=['time', 'mean', 'std']),
+            3: pd.DataFrame([], columns=['time', 'mean', 'std']),
+            4: pd.DataFrame([], columns=['time', 'mean', 'std'])},
         'aurora':
-           {1: {'mean': None, 'std': None},
-            2: {'mean': None, 'std': None},
-            3: {'mean': None, 'std': None},
-            4: {'mean': None, 'std': None}}}
+           {1: pd.DataFrame([], columns=['time', 'mean', 'std']),
+            2: pd.DataFrame([], columns=['time', 'mean', 'std']),
+            3: pd.DataFrame([], columns=['time', 'mean', 'std']),
+            4: pd.DataFrame([], columns=['time', 'mean', 'std'])}
+        }
 
 # Plot throughput over time
 for protocol in PROTOCOLS:
@@ -50,16 +51,17 @@ for protocol in PROTOCOLS:
             receiver_total['time'] = receiver_total['time'].apply(lambda x: int(float(x)))
 
             receiver_total = receiver_total[(receiver_total['time'] > 0) & (receiver_total['time'] < 175)]
-            receiver_total = receiver_total.drop_duplicates('time')
             receiver_total.set_index('time')
             receivers[n+1].append(receiver_total)
 
    # For each flow, receivers contains a list of dataframes with a time and bandwidth column. These dataframes SHOULD have
    # exactly the same index. Now I can concatenate and compute mean and std
-
+   print(len(receivers[1]))
+   print(len(receivers[2]))
    for n in range(FLOWS):
       data[protocol][n+1]['mean'] = pd.concat(receivers[n+1], axis=1).mean(axis=1)
       data[protocol][n+1]['std'] = pd.concat(receivers[n+1], axis=1).std(axis=1)
+      data[protocol][n + 1].index = pd.concat(receivers[n+1], axis=1).index
 
 
 LINEWIDTH = 1
@@ -68,10 +70,11 @@ fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 4))
 for i,protocol in enumerate(PROTOCOLS):
    ax = axes[i]
    for n in range(FLOWS):
-      ax.plot(data[protocol][n+1]['mean'].index, data[protocol][n+1]['mean'].values, linewidth=LINEWIDTH, label=protocol)
-      ax.fill_between(data[protocol][n+1]['mean'].index, data[protocol][n+1]['mean'].values - data[protocol][n+1]['std'].values, data[protocol][n+1]['mean'].values + data[protocol][n+1]['std'].values, alpha=0.2)
+      ax.plot(data[protocol][n+1].index, data[protocol][n+1]['mean'], linewidth=LINEWIDTH, label=protocol)
+      ax.fill_between(data[protocol][n+1].index, data[protocol][n+1]['mean'] - data[protocol][n+1]['std'], data[protocol][n+1]['mean'] + data[protocol][n+1]['std'], alpha=0.2)
 
    ax.set(ylabel='Goodput (Mbps)', xlabel='time (s)')
+   ax.set(title='%s' % protocol)
 
 plt.tight_layout()
 plt.savefig('goodput_over_time_%s.png' % (FLOWS), dpi=720)
