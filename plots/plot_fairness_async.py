@@ -79,6 +79,7 @@ for i,protocol in enumerate(PROTOCOLS):
 
    ax.set(ylabel='Goodput (Mbps)', xlabel='time (s)', ylim=[0,100])
    ax.set(title='%s' % protocol)
+   ax.grid()
 
 fig.suptitle("%s Mbps, %s RTT, %sxBDP" % (BW, 2*DELAY, QMULTS))
 fig.subplots_adjust(top=0.88)
