@@ -10,7 +10,7 @@ ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_fairness_async
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAY = 10
-QMULTS = 1
+QMULTS = 0.1
 RUNS = [1, 2, 3, 4, 5]
 FLOWS = 2
 
