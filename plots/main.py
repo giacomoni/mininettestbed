@@ -397,7 +397,7 @@ def parse_inter_rtt_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
                         avg_retr = (retr1 + retr2).mean()
                         std_retr = (retr1 + retr2).std()
 
-                  delay_ratio = delay/20
+                  delay_ratio = delay/10
                   data_entry = [protocol, bw, delay,delay_ratio ,mult, run, avg_thr, avg_goodput, avg_srtt, std_thr, std_goodput,
                                 std_srtt, avg_retr, std_retr, efficiency_thr, efficiency_gdp, efficiency_rtt,
                                 efficiency_q_avg, efficiency_q_std, jain_goodput_20, jain_goodput_total]
@@ -427,7 +427,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
       sums_runs = []
 
       for run in RUNS:
-         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
+         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
          if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
             receiver1 = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
             receiver2 = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
