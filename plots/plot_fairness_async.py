@@ -51,7 +51,7 @@ for protocol in PROTOCOLS:
             receiver_total = pd.read_csv(PATH + '/csvs/x%s.csv' % (n+1)).reset_index(drop=True)
             receiver_total = receiver_total[['time', 'bandwidth']]
             receiver_total['time'] = receiver_total['time'].apply(lambda x: int(float(x)))
-            receiver_total['bandwidth'] = receiver_total['bandwidth'].ewm(alpha=0.5).mean()
+            receiver_total['bandwidth'] = receiver_total['bandwidth'].ewm(alpha=0.1).mean()
 
             receiver_total = receiver_total[(receiver_total['time'] >= (start_time+n*25)) & (receiver_total['time'] <= (end_time+n*25))]
             receiver_total = receiver_total.drop_duplicates('time')
