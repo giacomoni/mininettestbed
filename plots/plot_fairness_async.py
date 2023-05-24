@@ -9,7 +9,7 @@ from matplotlib.ticker import ScalarFormatter
 ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_fairness_async/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
-DELAY = 10
+DELAY = 100
 QMULTS = 10
 RUNS = [1, 2, 3, 4, 5]
 FLOWS = 2
