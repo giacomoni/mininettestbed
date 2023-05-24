@@ -69,7 +69,7 @@ for protocol in PROTOCOLS:
 
 
 LINEWIDTH = 1
-fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(6, 3))
+fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(7, 2))
 
 for i,protocol in enumerate(PROTOCOLS):
    ax = axes[i]
