@@ -610,36 +610,36 @@ if __name__ == "__main__":
    # RUNS = [1, 2, 3, 4, 5]
    # LOSSES = [0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 4]
 
-   ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2/fifo"
-   PROTOCOLS = ['cubic', 'orca', 'aurora']
-   BWS = [100]
-   DELAYS = [20, 30, 40, 50, 60, 70, 80, 90, 100]
-   QMULTS = [1]
-   RUNS = [1, 2, 3, 4, 5]
-   LOSSES=[0]
-
-
-
-   # parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, LOSSES, RUNS)
-   # parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
-   parse_inter_rtt_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
-
-
-   summary_data = pd.read_csv("summary_data.csv")
-   summary_data[['avg_retr', 'std_retr']] = summary_data[['avg_retr', 'std_retr']].fillna(value=0)
-   summary_data = summary_data.dropna()
-
-   orca_summary_data = summary_data[summary_data['protocol'] == 'orca']
-   cubic_summary_data = summary_data[summary_data['protocol'] == 'cubic']
-   aurora_summary_data = summary_data[summary_data['protocol'] == 'aurora']
-
-   orca_data = orca_summary_data.groupby('delay_ratio').mean()
-   cubic_data = cubic_summary_data.groupby('delay_ratio').mean()
-   aurora_data = aurora_summary_data.groupby('delay_ratio').mean()
-
-   orca_error = orca_summary_data.groupby('delay_ratio').std()
-   cubic_error = cubic_summary_data.groupby('delay_ratio').std()
-   aurora_error = aurora_summary_data.groupby('delay_ratio').std()
+   # ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2/fifo"
+   # PROTOCOLS = ['cubic', 'orca', 'aurora']
+   # BWS = [100]
+   # DELAYS = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+   # QMULTS = [1]
+   # RUNS = [1, 2, 3, 4, 5]
+   # LOSSES=[0]
+   #
+   #
+   #
+   # # parse_one_flow_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, LOSSES, RUNS)
+   # # parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
+   # parse_inter_rtt_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS)
+   #
+   #
+   # summary_data = pd.read_csv("summary_data.csv")
+   # summary_data[['avg_retr', 'std_retr']] = summary_data[['avg_retr', 'std_retr']].fillna(value=0)
+   # summary_data = summary_data.dropna()
+   #
+   # orca_summary_data = summary_data[summary_data['protocol'] == 'orca']
+   # cubic_summary_data = summary_data[summary_data['protocol'] == 'cubic']
+   # aurora_summary_data = summary_data[summary_data['protocol'] == 'aurora']
+   #
+   # orca_data = orca_summary_data.groupby('delay_ratio').mean()
+   # cubic_data = cubic_summary_data.groupby('delay_ratio').mean()
+   # aurora_data = aurora_summary_data.groupby('delay_ratio').mean()
+   #
+   # orca_error = orca_summary_data.groupby('delay_ratio').std()
+   # cubic_error = cubic_summary_data.groupby('delay_ratio').std()
+   # aurora_error = aurora_summary_data.groupby('delay_ratio').std()
 
 #    LINEWIDTH = 1
 #    YLIM = [0, 100]
@@ -739,191 +739,191 @@ if __name__ == "__main__":
 # plt.savefig('avg_rtt_loss.png', dpi=720)
 
 
-LINEWIDTH = 1
-
-fig, axes = plt.subplots(nrows=1, ncols=1)
-ax = axes
-
-
-
-ax.errorbar(cubic_data.index, cubic_data['jain_goodput_20'], yerr=cubic_error['jain_goodput_20'],marker='x',linewidth=LINEWIDTH, label='cubic')
-ax.errorbar(orca_data.index,orca_data['jain_goodput_20'], yerr=orca_error['jain_goodput_20'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
-ax.errorbar(aurora_data.index,aurora_data['jain_goodput_20'], yerr=aurora_error['jain_goodput_20'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
-for axis in [ax.xaxis, ax.yaxis]:
-    axis.set_major_formatter(ScalarFormatter())
-ax.legend()
-ax.grid()
-
-plt.savefig('goodput_ratio_20.png', dpi=720)
-
-LINEWIDTH = 1
-
-fig, axes = plt.subplots(nrows=1, ncols=1)
-ax = axes
-
-
-
-ax.errorbar(cubic_data.index,cubic_data['jain_goodput_total'], yerr=cubic_error['jain_goodput_total'],marker='x',linewidth=LINEWIDTH, label='cubic')
-ax.errorbar(orca_data.index,orca_data['jain_goodput_total'], yerr=orca_error['jain_goodput_total'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
-ax.errorbar(aurora_data.index,aurora_data['jain_goodput_total'], yerr=aurora_error['jain_goodput_total'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
-for axis in [ax.xaxis, ax.yaxis]:
-    axis.set_major_formatter(ScalarFormatter())
-ax.legend()
-ax.grid()
-
-plt.savefig('goodput_ratio.png', dpi=720)
-
-# Plot the efficiency, fairness over time (first 5)
-ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
-PROTOCOLS = ['cubic', 'orca', 'aurora']
-BW = 100
-DELAYS = [20,30,40,50]
-QMULT = 1
-RUNS = [1, 2, 3, 4, 5]
-SYNC = False
-
-
-
-fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(15,4))
-
-for i,delay in enumerate(DELAYS):
-   sums, ratios = fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, delay, QMULT, RUNS, SYNC)
-   # Sum plot
-   ax = axes[0][i]
-   LINEWIDTH = 1
-   for protocol in PROTOCOLS:
-      x = sums[protocol].index
-      y = sums[protocol].mean(axis=1)
-      err = sums[protocol].std(axis=1)
-      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
-      ax.fill_between(x, y - err, y + err, alpha=0.2)
-      if i == 0:
-         ax.set(ylabel='Normalised Aggregate Goodput')
-      ax.set( ylim=[0, 1.25], xlim=[0,125])
-      ax.set_title('x%s' % (delay/10))
-      ax.legend()
-      ax.grid()
-
-
-   # Fairness plot
-   ax = axes[1][i]
-   for protocol in PROTOCOLS:
-      x = ratios[protocol].index
-      y = ratios[protocol].mean(axis=1)
-      err = ratios[protocol].std(axis=1)
-      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
-      ax.fill_between(x, y - err, y + err, alpha=0.2)
-      if i == 0:
-         ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
-      ax.legend()
-      ax.grid()
-
-plt.tight_layout()
-plt.savefig("first_five.png", dpi=720)
-
-# Plot the efficiency, fairness over time (last 5)
-ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
-PROTOCOLS = ['cubic', 'orca', 'aurora']
-BW = 100
-DELAYS = [60,70,80,90,100]
-QMULT = 1
-RUNS = [1, 2, 3, 4, 5]
-SYNC = False
-
-fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 4))
-
-for i, delay in enumerate(DELAYS):
-   sums, ratios = fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, delay, QMULT, RUNS, SYNC)
-   # Sum plot
-   ax = axes[0][i]
-   LINEWIDTH = 1
-   for protocol in PROTOCOLS:
-      x = sums[protocol].index
-      y = sums[protocol].mean(axis=1)
-      err = sums[protocol].std(axis=1)
-      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
-      ax.fill_between(x, y - err, y + err, alpha=0.2)
-      if i == 0:
-         ax.set(ylabel='Normalised Aggregate Goodput')
-
-      ax.set( ylim=[0, 1.25], xlim=[0,125])
-      ax.set_title('x%s' % (delay/10))
-      ax.legend()
-      ax.grid()
-
-   # Fairness plot
-   ax = axes[1][i]
-   for protocol in PROTOCOLS:
-      x = ratios[protocol].index
-      y = ratios[protocol].mean(axis=1)
-      err = ratios[protocol].std(axis=1)
-      ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
-      ax.fill_between(x, y - err, y + err, alpha=0.2)
-      if i == 0:
-         ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
-      ax.legend()
-      ax.grid()
-
-plt.tight_layout()
-plt.savefig("last_five.png", dpi=720)
+# LINEWIDTH = 1
+#
+# fig, axes = plt.subplots(nrows=1, ncols=1)
+# ax = axes
+#
+#
+#
+# ax.errorbar(cubic_data.index, cubic_data['jain_goodput_20'], yerr=cubic_error['jain_goodput_20'],marker='x',linewidth=LINEWIDTH, label='cubic')
+# ax.errorbar(orca_data.index,orca_data['jain_goodput_20'], yerr=orca_error['jain_goodput_20'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
+# ax.errorbar(aurora_data.index,aurora_data['jain_goodput_20'], yerr=aurora_error['jain_goodput_20'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
+# ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+# for axis in [ax.xaxis, ax.yaxis]:
+#     axis.set_major_formatter(ScalarFormatter())
+# ax.legend()
+# ax.grid()
+#
+# plt.savefig('goodput_ratio_20.png', dpi=720)
+#
+# LINEWIDTH = 1
+#
+# fig, axes = plt.subplots(nrows=1, ncols=1)
+# ax = axes
+#
+#
+#
+# ax.errorbar(cubic_data.index,cubic_data['jain_goodput_total'], yerr=cubic_error['jain_goodput_total'],marker='x',linewidth=LINEWIDTH, label='cubic')
+# ax.errorbar(orca_data.index,orca_data['jain_goodput_total'], yerr=orca_error['jain_goodput_total'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
+# ax.errorbar(aurora_data.index,aurora_data['jain_goodput_total'], yerr=aurora_error['jain_goodput_total'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
+# ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+# for axis in [ax.xaxis, ax.yaxis]:
+#     axis.set_major_formatter(ScalarFormatter())
+# ax.legend()
+# ax.grid()
+#
+# plt.savefig('goodput_ratio.png', dpi=720)
+#
+# # Plot the efficiency, fairness over time (first 5)
+# ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
+# PROTOCOLS = ['cubic', 'orca', 'aurora']
+# BW = 100
+# DELAYS = [20,30,40,50]
+# QMULT = 1
+# RUNS = [1, 2, 3, 4, 5]
+# SYNC = False
+#
+#
+#
+# fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(15,4))
+#
+# for i,delay in enumerate(DELAYS):
+#    sums, ratios = fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, delay, QMULT, RUNS, SYNC)
+#    # Sum plot
+#    ax = axes[0][i]
+#    LINEWIDTH = 1
+#    for protocol in PROTOCOLS:
+#       x = sums[protocol].index
+#       y = sums[protocol].mean(axis=1)
+#       err = sums[protocol].std(axis=1)
+#       ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+#       ax.fill_between(x, y - err, y + err, alpha=0.2)
+#       if i == 0:
+#          ax.set(ylabel='Normalised Aggregate Goodput')
+#       ax.set( ylim=[0, 1.25], xlim=[0,125])
+#       ax.set_title('x%s' % (delay/10))
+#       ax.legend()
+#       ax.grid()
+#
+#
+#    # Fairness plot
+#    ax = axes[1][i]
+#    for protocol in PROTOCOLS:
+#       x = ratios[protocol].index
+#       y = ratios[protocol].mean(axis=1)
+#       err = ratios[protocol].std(axis=1)
+#       ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+#       ax.fill_between(x, y - err, y + err, alpha=0.2)
+#       if i == 0:
+#          ax.set(ylabel='Goodputs Ratio')
+#       ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
+#       ax.legend()
+#       ax.grid()
+#
+# plt.tight_layout()
+# plt.savefig("first_five.png", dpi=720)
+#
+# # Plot the efficiency, fairness over time (last 5)
+# ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
+# PROTOCOLS = ['cubic', 'orca', 'aurora']
+# BW = 100
+# DELAYS = [60,70,80,90,100]
+# QMULT = 1
+# RUNS = [1, 2, 3, 4, 5]
+# SYNC = False
+#
+# fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 4))
+#
+# for i, delay in enumerate(DELAYS):
+#    sums, ratios = fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, delay, QMULT, RUNS, SYNC)
+#    # Sum plot
+#    ax = axes[0][i]
+#    LINEWIDTH = 1
+#    for protocol in PROTOCOLS:
+#       x = sums[protocol].index
+#       y = sums[protocol].mean(axis=1)
+#       err = sums[protocol].std(axis=1)
+#       ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+#       ax.fill_between(x, y - err, y + err, alpha=0.2)
+#       if i == 0:
+#          ax.set(ylabel='Normalised Aggregate Goodput')
+#
+#       ax.set( ylim=[0, 1.25], xlim=[0,125])
+#       ax.set_title('x%s' % (delay/10))
+#       ax.legend()
+#       ax.grid()
+#
+#    # Fairness plot
+#    ax = axes[1][i]
+#    for protocol in PROTOCOLS:
+#       x = ratios[protocol].index
+#       y = ratios[protocol].mean(axis=1)
+#       err = ratios[protocol].std(axis=1)
+#       ax.plot(x, y, linewidth=LINEWIDTH, label=protocol)
+#       ax.fill_between(x, y - err, y + err, alpha=0.2)
+#       if i == 0:
+#          ax.set(ylabel='Goodputs Ratio')
+#       ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
+#       ax.legend()
+#       ax.grid()
+#
+# plt.tight_layout()
+# plt.savefig("last_five.png", dpi=720)
 
 # Plot congestion window, or sending rate
-#    ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2/fifo"
-#    PROTOCOLS = ['cubic', 'orca', 'aurora']
-#    BW = 100
-#    DELAY = 90
-#    QMULT = 1
-#    RUNS = [1, 2, 3, 4, 5]
-#    BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
-#    BDP_IN_PKTS = BDP_IN_BYTES / 1500
-#
-#    fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(10, 6))
-#
-#    sending = sending_rates_congestion_window(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS)
-#    LINEWIDTH = 1
-#
-#    for i, protocol in enumerate(PROTOCOLS):
-#       for run in RUNS:
-#          ax = axes[run - 1][i]
-#          x1 = sending[protocol][run - 1]['c1']['time']
-#          x2 = sending[protocol][run - 1]['c2']['time']
-#
-#          if protocol != 'aurora':
-#             y1 = sending[protocol][run - 1]['c1']['cwnd']
-#             y2 = sending[protocol][run - 1]['c2']['cwnd']
-#
-#          else:
-#             y1 = sending[protocol][run - 1]['c1']['bandwidth']
-#             y2 = sending[protocol][run - 1]['c2']['bandwidth']
-#
-#          ax.plot(x1, y1, linewidth=LINEWIDTH, alpha=0.75)
-#          ax.plot(x2, y2, linewidth=LINEWIDTH, alpha=0.75)
-#          if protocol != 'aurora':
-#             ax.set(ylabel='cwnd (pkts)', ylim=[10,3000], yscale='log')
-#             ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
-#             ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
-#
-#
-#          else:
-#             ax.set(ylabel='Send Rate (Mbps)', ylim=[0,200], yscale='linear')
-#             ax.axhline(y=100, color='r', linestyle='--', alpha=0.5)
-#             ax.axhline(y=50, color='r', linestyle='--', alpha=0.5)
-#
-#
-#          if run == 5:
-#             ax.set(xlabel='time (s)')
-#          ax.set_title('%s - Run %s' % (protocol, run))
-#
-#          ax.set(xlim=[0,125])
-#
-#          ax.grid()
-#
-#    plt.tight_layout()
-#    plt.savefig("sending_%s.png" % DELAY, dpi=720)
+   ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2/fifo"
+   PROTOCOLS = ['cubic', 'orca', 'aurora']
+   BW = 100
+   DELAY = 20
+   QMULT = 1
+   RUNS = [1, 2, 3, 4, 5]
+   BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
+   BDP_IN_PKTS = BDP_IN_BYTES / 1500
+
+   fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(10, 6))
+
+   sending = sending_rates_congestion_window(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS)
+   LINEWIDTH = 1
+
+   for i, protocol in enumerate(PROTOCOLS):
+      for run in RUNS:
+         ax = axes[run - 1][i]
+         x1 = sending[protocol][run - 1]['c1']['time']
+         x2 = sending[protocol][run - 1]['c2']['time']
+
+         if protocol != 'aurora':
+            y1 = sending[protocol][run - 1]['c1']['cwnd']
+            y2 = sending[protocol][run - 1]['c2']['cwnd']
+
+         else:
+            y1 = sending[protocol][run - 1]['c1']['bandwidth']
+            y2 = sending[protocol][run - 1]['c2']['bandwidth']
+
+         ax.plot(x1, y1, linewidth=LINEWIDTH, alpha=0.75)
+         ax.plot(x2, y2, linewidth=LINEWIDTH, alpha=0.75)
+         if protocol != 'aurora':
+            ax.set(ylabel='cwnd (pkts)', ylim=[10,3000], yscale='log')
+            ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+            ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+
+
+         else:
+            ax.set(ylabel='Send Rate (Mbps)', ylim=[0,200], yscale='linear')
+            ax.axhline(y=100, color='r', linestyle='--', alpha=0.5)
+            ax.axhline(y=50, color='r', linestyle='--', alpha=0.5)
+
+
+         if run == 5:
+            ax.set(xlabel='time (s)')
+         ax.set_title('%s - Run %s' % (protocol, run))
+
+         ax.set(xlim=[0,125])
+
+         ax.grid()
+
+   plt.tight_layout()
+   plt.savefig("sending_%s.png" % DELAY, dpi=720)
 
 
 
