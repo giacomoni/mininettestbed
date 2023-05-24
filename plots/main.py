@@ -405,7 +405,7 @@ def parse_inter_rtt_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
 
 
    summary_data = pd.DataFrame(data,
-                               columns=['protocol', 'bandwidth', 'delay', 'delay_ratio' ,'qmult', 'loss', 'run', 'avg_thr', 'avg_goodput',
+                               columns=['protocol', 'bandwidth', 'delay', 'delay_ratio' ,'qmult', 'run', 'avg_thr', 'avg_goodput',
                                         'avg_srtt', 'std_thr', 'std_goodput', 'std_srtt', 'avg_retr', 'std_retr',
                                         'efficiency_thr', 'efficiency_gdp', 'efficiency_rtt', 'efficiency_q_avg',
                                         'efficiency_q_std', 'jain_goodput_20', 'jain_goodput_total'])
