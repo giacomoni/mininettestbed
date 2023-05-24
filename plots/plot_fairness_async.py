@@ -10,7 +10,7 @@ ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_fairness_async
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAY = 100
-QMULTS = 10
+QMULTS = 1
 RUNS = [1, 2, 3, 4, 5]
 FLOWS = 2
 
@@ -51,7 +51,7 @@ for protocol in PROTOCOLS:
             receiver_total = pd.read_csv(PATH + '/csvs/x%s.csv' % (n+1)).reset_index(drop=True)
             receiver_total = receiver_total[['time', 'bandwidth']]
             receiver_total['time'] = receiver_total['time'].apply(lambda x: int(float(x)))
-            receiver_total['bandwidth'] = receiver_total['bandwidth'].ewm(alpha=0.2).mean()
+            receiver_total['bandwidth'] = receiver_total['bandwidth'].ewm(alpha=0.5).mean()
 
             receiver_total = receiver_total[(receiver_total['time'] >= (start_time+n*25)) & (receiver_total['time'] <= (end_time+n*25))]
             receiver_total = receiver_total.drop_duplicates('time')
