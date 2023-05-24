@@ -55,7 +55,7 @@ for protocol in PROTOCOLS:
 
             receiver_total = receiver_total[(receiver_total['time'] >= (start_time+n*25)) & (receiver_total['time'] <= (end_time+n*25))]
             receiver_total = receiver_total.drop_duplicates('time')
-            receiver_total.set_index('time')
+            receiver_total = receiver_total.set_index('time')
             receivers[n+1].append(receiver_total)
 
    # For each flow, receivers contains a list of dataframes with a time and bandwidth column. These dataframes SHOULD have
@@ -65,7 +65,7 @@ for protocol in PROTOCOLS:
          print(len(df))
       data[protocol][n+1]['mean'] = pd.concat(receivers[n+1], axis=1).mean(axis=1)
       data[protocol][n+1]['std'] = pd.concat(receivers[n+1], axis=1).std(axis=1)
-      data[protocol][n + 1].index = pd.concat(receivers[n+1], axis=1).index
+      data[protocol][n+1].index = pd.concat(receivers[n+1], axis=1).index
 
 
 LINEWIDTH = 1
