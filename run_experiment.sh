@@ -187,9 +187,199 @@
 # done
 
 
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="10 20 30 40 50 60 70 80 90 100"
+#RUNS="1 2 3 4 5"
+#QMULTS="1"
+#FLOWS="2"
+#
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_async_2.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+#
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="10 100"
+#RUNS="1 2 3 4 5"
+#QMULTS="0.1 1 10"
+#FLOWS="2"
+#
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_async_3.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+#
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="10 100"
+#RUNS="1 2 3 4 5"
+#QMULTS="0.1 1 10"
+#FLOWS="2"
+#
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_async_4.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+#
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="10 20 30 40 50 60 70 80 90 100"
+#RUNS="1 2 3 4 5"
+#QMULTS="1"
+#FLOWS="2"
+#
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_async_5.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+#
+#
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="20 30 40 50 60 70 80 90 100"
+#RUNS="1 2 3 4 5"
+#QMULTS="1"
+#FLOWS="2"
+#
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_inter_rtt_async.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+#
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="20 30 40 50 60 70 80 90 100"
+#RUNS="1 2 3 4 5"
+#QMULTS="1"
+#FLOWS="2"
+#
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_inter_rtt_sync.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+#
+#PROTOCOLS="orca aurora cubic"
+#BANDWIDTHS="100"
+#DELAYS="20 30 40 50 60 70 80 90 100"
+#RUNS="1 2 3 4 5"
+#QMULTS="1"
+#FLOWS="2"
+#
+#for bw in $BANDWIDTHS
+#do
+#for del in $DELAYS
+#do
+#for qmult in $QMULTS
+#do
+#for flow in $FLOWS
+#do
+#    for protocol in $PROTOCOLS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python fairness_inter_rtt_async_2.py $del $bw $qmult $protocol $run fifo 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+#
 PROTOCOLS="orca aurora cubic"
 BANDWIDTHS="100"
-DELAYS="10 20 30 40 50 60 70 80 90 100"
+DELAYS="20 30 40 50 60 70 80 90 100"
 RUNS="1 2 3 4 5"
 QMULTS="1"
 FLOWS="2"
@@ -206,95 +396,13 @@ do
     do
         for run in $RUNS
         do
-            sudo python fairness_async_2.py $del $bw $qmult $protocol $run fifo 0 $flow
+            sudo python fairness_inter_rtt_async_correct.py $del $bw $qmult $protocol $run fifo 0 $flow
         done
     done
     done
     done
     done
     done
-
-PROTOCOLS="orca aurora cubic"
-BANDWIDTHS="100"
-DELAYS="10 100"
-RUNS="1 2 3 4 5"
-QMULTS="0.1 1 10"
-FLOWS="2"
-
-for bw in $BANDWIDTHS
-do
-for del in $DELAYS
-do
-for qmult in $QMULTS
-do
-for flow in $FLOWS
-do
-    for protocol in $PROTOCOLS
-    do
-        for run in $RUNS
-        do
-            sudo python fairness_async_3.py $del $bw $qmult $protocol $run fifo 0 $flow
-        done
-    done
-    done
-    done
-    done
-    done
-
-PROTOCOLS="orca aurora cubic"
-BANDWIDTHS="100"
-DELAYS="10 100"
-RUNS="1 2 3 4 5"
-QMULTS="0.1 1 10"
-FLOWS="2"
-
-for bw in $BANDWIDTHS
-do
-for del in $DELAYS
-do
-for qmult in $QMULTS
-do
-for flow in $FLOWS
-do
-    for protocol in $PROTOCOLS
-    do
-        for run in $RUNS
-        do
-            sudo python fairness_async_4.py $del $bw $qmult $protocol $run fifo 0 $flow
-        done
-    done
-    done
-    done
-    done
-    done
-
-PROTOCOLS="orca aurora cubic"
-BANDWIDTHS="100"
-DELAYS="10 20 30 40 50 60 70 80 90 100"
-RUNS="1 2 3 4 5"
-QMULTS="1"
-FLOWS="2"
-
-for bw in $BANDWIDTHS
-do
-for del in $DELAYS
-do
-for qmult in $QMULTS
-do
-for flow in $FLOWS
-do
-    for protocol in $PROTOCOLS
-    do
-        for run in $RUNS
-        do
-            sudo python fairness_async_5.py $del $bw $qmult $protocol $run fifo 0 $flow
-        done
-    done
-    done
-    done
-    done
-    done
-
 
 PROTOCOLS="orca aurora cubic"
 BANDWIDTHS="100"
@@ -315,7 +423,7 @@ do
     do
         for run in $RUNS
         do
-            sudo python fairness_inter_rtt_async.py $del $bw $qmult $protocol $run fifo 0 $flow
+            sudo python fairness_inter_rtt_sync_correct.py $del $bw $qmult $protocol $run fifo 0 $flow
         done
     done
     done
@@ -342,7 +450,7 @@ do
     do
         for run in $RUNS
         do
-            sudo python fairness_inter_rtt_sync.py $del $bw $qmult $protocol $run fifo 0 $flow
+            sudo python fairness_inter_rtt_async_2_correct.py $del $bw $qmult $protocol $run fifo 0 $flow
         done
     done
     done
@@ -351,8 +459,8 @@ do
     done
 
 PROTOCOLS="orca aurora cubic"
-BANDWIDTHS="100"
-DELAYS="20 30 40 50 60 70 80 90 100"
+BANDWIDTHS="20 40 60 80 100 200 400 600 800 1000"
+DELAYS="30"
 RUNS="1 2 3 4 5"
 QMULTS="1"
 FLOWS="2"
@@ -369,7 +477,7 @@ do
     do
         for run in $RUNS
         do
-            sudo python fairness_inter_rtt_async_2.py $del $bw $qmult $protocol $run fifo 0 $flow
+            sudo python fairness_bw_sync.py $del $bw $qmult $protocol $run fifo 0 $flow
         done
     done
     done
@@ -377,6 +485,32 @@ do
     done
     done
 
+PROTOCOLS="orca aurora cubic"
+BANDWIDTHS="2 6 10 20 60 100 200 600 1000"
+DELAYS="25"
+RUNS="1 2 3 4 5"
+QMULTS="1"
+FLOWS="2"
+
+for bw in $BANDWIDTHS
+do
+for del in $DELAYS
+do
+for qmult in $QMULTS
+do
+for flow in $FLOWS
+do
+    for protocol in $PROTOCOLS
+    do
+        for run in $RUNS
+        do
+            sudo python fairness_bw_async.py $del $bw $qmult $protocol $run fifo 0 $flow
+        done
+    done
+    done
+    done
+    done
+    done
 
 
 
