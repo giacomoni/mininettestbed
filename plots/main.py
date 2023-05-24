@@ -610,7 +610,7 @@ if __name__ == "__main__":
    # RUNS = [1, 2, 3, 4, 5]
    # LOSSES = [0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 2, 4]
 
-   ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_sync/fifo"
+   ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
    PROTOCOLS = ['cubic', 'orca', 'aurora']
    BWS = [100]
    DELAYS = [20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -749,7 +749,7 @@ ax = axes
 ax.errorbar(cubic_data.index, cubic_data['jain_goodput_20'], yerr=cubic_error['jain_goodput_20'],marker='x',linewidth=LINEWIDTH, label='cubic')
 ax.errorbar(orca_data.index,orca_data['jain_goodput_20'], yerr=orca_error['jain_goodput_20'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
 ax.errorbar(aurora_data.index,aurora_data['jain_goodput_20'], yerr=aurora_error['jain_goodput_20'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-ax.set(xscale='log',yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
@@ -767,7 +767,7 @@ ax = axes
 ax.errorbar(cubic_data.index,cubic_data['jain_goodput_total'], yerr=cubic_error['jain_goodput_total'],marker='x',linewidth=LINEWIDTH, label='cubic')
 ax.errorbar(orca_data.index,orca_data['jain_goodput_total'], yerr=orca_error['jain_goodput_total'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
 ax.errorbar(aurora_data.index,aurora_data['jain_goodput_total'], yerr=aurora_error['jain_goodput_total'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
-ax.set(xscale='log',yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
@@ -776,13 +776,13 @@ ax.grid()
 plt.savefig('goodput_ratio.png', dpi=720)
 
 # Plot the efficiency, fairness over time (first 5)
-ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_sync/fifo"
+ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAYS = [20,30,40,50]
 QMULT = 1
 RUNS = [1, 2, 3, 4, 5]
-SYNC = True
+SYNC = False
 
 
 
@@ -827,7 +827,7 @@ plt.tight_layout()
 plt.savefig("first_five.png", dpi=720)
 
 # Plot the efficiency, fairness over time (last 5)
-ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_sync/fifo"
+ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAYS = [60,70,80,90,100]

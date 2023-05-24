@@ -40,7 +40,7 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
                         #   TrafficConf('c4', 'x4', 75, 25, protocol)]
     elif n_flows == 2:
         traffic_config = [TrafficConf('c1', 'x1', 0, 100, protocol),
-                           TrafficConf('c2', 'x2', 25, 125, protocol)]
+                           TrafficConf('c2', 'x2', 0, 100, protocol)]
     elif n_flows == 3:
         traffic_config = [TrafficConf('c1', 'x1', 0, 100, protocol),
                          TrafficConf('c2', 'x2', 25, 125, protocol),
