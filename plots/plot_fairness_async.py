@@ -41,7 +41,7 @@ for FLOWS in [3,4]:
             senders = {1: [], 2: [], 3: [], 4:[]}
             receivers = {1: [], 2: [], 3: [], 4:[]}
             for run in RUNS:
-               PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (BW,DELAY,int(QMULTS * BDP_IN_PKTS),protocol,run)
+               PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_%sflows_22tcpbuf_%s/run%s' % (BW,DELAY,int(QMULTS * BDP_IN_PKTS),FLOWS,protocol,run)
                for n in range(FLOWS):
                   if os.path.exists(PATH + '/csvs/c%s.csv' % (n+1)):
                      sender = pd.read_csv(PATH +  '/csvs/c%s.csv' % (n+1))
