@@ -817,7 +817,7 @@ for i,delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,125], yscale='log')
+      ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
@@ -866,7 +866,7 @@ for i, delay in enumerate(DELAYS):
       ax.fill_between(x, y - err, y + err, alpha=0.2)
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
-      ax.set(xlabel='time (s)', ylim=[0.1, 110], xlim=[0,125], yscale='log')
+      ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
       for axis in [ax.xaxis, ax.yaxis]:
          axis.set_major_formatter(ScalarFormatter())
       ax.legend()
