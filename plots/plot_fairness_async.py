@@ -69,7 +69,7 @@ for protocol in PROTOCOLS:
 
 
 LINEWIDTH = 1
-fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10, 3))
+fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(6, 3))
 
 for i,protocol in enumerate(PROTOCOLS):
    ax = axes[i]
@@ -81,7 +81,6 @@ for i,protocol in enumerate(PROTOCOLS):
    ax.set(title='%s' % protocol)
 
 fig.suptitle("%s Mbps, %s RTT, %sxBDP" % (BW, 2*DELAY, QMULTS))
-fig.tight_layout()
 fig.subplots_adjust(top=0.88)
 plt.savefig('goodput_over_time_%smbps_%sms_%sbuf_%s.png' % (BW,DELAY,QMULTS,FLOWS), dpi=720)
 
