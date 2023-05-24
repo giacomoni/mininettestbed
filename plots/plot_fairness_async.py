@@ -10,7 +10,7 @@ ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_fairness_async
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAY = 100
-QMULTS = 1
+QMULTS = 0.1
 RUNS = [1, 2, 3, 4, 5]
 FLOWS = 2
 
@@ -61,8 +61,6 @@ for protocol in PROTOCOLS:
    # For each flow, receivers contains a list of dataframes with a time and bandwidth column. These dataframes SHOULD have
    # exactly the same index. Now I can concatenate and compute mean and std
    for n in range(FLOWS):
-      for df in receivers[n+1]:
-         print(len(df))
       data[protocol][n+1]['mean'] = pd.concat(receivers[n+1], axis=1).mean(axis=1)
       data[protocol][n+1]['std'] = pd.concat(receivers[n+1], axis=1).std(axis=1)
       data[protocol][n+1].index = pd.concat(receivers[n+1], axis=1).index
