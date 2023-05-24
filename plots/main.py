@@ -833,7 +833,7 @@ BW = 100
 DELAYS = [60,70,80,90,100]
 QMULT = 1
 RUNS = [1, 2, 3, 4, 5]
-SYNC = True
+SYNC = False
 
 fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 4))
 
