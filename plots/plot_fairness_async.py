@@ -74,7 +74,7 @@ for i,protocol in enumerate(PROTOCOLS):
    ax.set(ylabel='Goodput (Mbps)', xlabel='time (s)')
 
 plt.tight_layout()
-plt.savvefig('goodput_over_time_%s.png' & (FLOWS), dpi=720)
+plt.savefig('goodput_over_time_%s.png' & (FLOWS), dpi=720)
 
 
 
