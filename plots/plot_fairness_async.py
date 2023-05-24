@@ -32,6 +32,8 @@ data = {'cubic':
             4: pd.DataFrame([], columns=['time', 'mean', 'std'])}
         }
 
+start_time = 0
+end_time = 100
 # Plot throughput over time
 for protocol in PROTOCOLS:
    BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
@@ -50,7 +52,8 @@ for protocol in PROTOCOLS:
             receiver_total = receiver_total[['time', 'bandwidth']]
             receiver_total['time'] = receiver_total['time'].apply(lambda x: int(float(x)))
 
-            receiver_total = receiver_total[(receiver_total['time'] > 0) & (receiver_total['time'] < 175)]
+            receiver_total = receiver_total[(receiver_total['time'] >= (start_time+n*25)) & (receiver_total['time'] <= (end_time+n*25))]
+            receiver_total = receiver_total.drop_duplicates('time')
             receiver_total.set_index('time')
             receivers[n+1].append(receiver_total)
             print(receiver_total)
