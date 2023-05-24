@@ -13,7 +13,7 @@ RUNS = [1, 2, 3, 4, 5]
 
 for FLOWS in [3,4]:
    for DELAY in [10,100]:
-      for QMULTS in [0.1, 1, 10]:
+      for QMULTS in [0.1, 1]:
 
          data = {'cubic':
                     {1: pd.DataFrame([], columns=['time','mean', 'std']),
