@@ -818,8 +818,6 @@ for i,delay in enumerate(DELAYS):
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
       ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
-      for axis in [ax.xaxis, ax.yaxis]:
-         axis.set_major_formatter(ScalarFormatter())
       ax.legend()
       ax.grid()
 
@@ -867,8 +865,6 @@ for i, delay in enumerate(DELAYS):
       if i == 0:
          ax.set(ylabel='Goodputs Ratio')
       ax.set(xlabel='time (s)', xlim=[0,125], yscale='log')
-      for axis in [ax.xaxis, ax.yaxis]:
-         axis.set_major_formatter(ScalarFormatter())
       ax.legend()
       ax.grid()
 
