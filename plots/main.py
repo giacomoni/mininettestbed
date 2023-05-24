@@ -875,7 +875,7 @@ if __name__ == "__main__":
    ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async/fifo"
    PROTOCOLS = ['cubic', 'orca', 'aurora']
    BW = 100
-   DELAY = 20
+   DELAY = 90
    QMULT = 1
    RUNS = [1, 2, 3, 4, 5]
    BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
