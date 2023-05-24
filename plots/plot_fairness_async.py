@@ -52,7 +52,7 @@ for protocol in PROTOCOLS:
             receiver_total = receiver_total[(receiver_total['time'] > 0) & (receiver_total['time'] < 175)]
             receiver_total = receiver_total.drop_duplicates('time')
             receiver_total.set_index('time')
-            receivers[n+1].append(receivers)
+            receivers[n+1].append(receiver_total)
 
    # For each flow, receivers contains a list of dataframes with a time and bandwidth column. These dataframes SHOULD have
    # exactly the same index. Now I can concatenate and compute mean and std
