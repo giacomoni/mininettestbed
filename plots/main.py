@@ -126,131 +126,131 @@ def  parse_many_flows_data(ROOT_PATH, PROTOCOLS, BWS, DELAYS, QMULTS, RUNS):
 
                BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * delay * (10 ** -3) / 8)
                BDP_IN_PKTS = BDP_IN_BYTES / 1500
-                  for run in RUNS:
-                     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
+               for run in RUNS:
+                  PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
+                  if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
+                     sender1 = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds)
+                     sender2 = pd.read_csv(PATH + '/csvs/c2.csv').tail(keep_last_seconds)
+
+                  if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
+                     receiver1_total = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
+                     receiver2_total = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
+                     receiver1_total['time'] = receiver1_total['time'].apply(lambda x: int(float(x)))
+                     receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
+
+                     receiver1_total = receiver1_total[(receiver1_total['time'] > start_time) & (receiver1_total['time'] < end_time)]
+                     receiver2_total = receiver2_total[(receiver2_total['time'] > start_time) & (receiver2_total['time'] < end_time)]
+
+
+
+                     receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
+                     receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
+                     avg_goodput = (receiver1['bandwidth'] + receiver2['bandwidth']).mean()
+                     std_goodput = (receiver1['bandwidth'] + receiver2['bandwidth']).std()
+                     jain_goodput_20 = receiver1['bandwidth'].mean()/receiver2['bandwidth'].mean()
+                     jain_goodput_total = receiver1_total['bandwidth'].mean()/receiver2_total[
+                        'bandwidth'].mean()
+
+                     efficiency_gdp = avg_goodput / bw
+                  else:
+                     avg_goodput = None
+                     std_goodput = None
+                     efficiency_gdp = None
+                     jain_goodput_20 = None
+                     jain_goodput_total = None
+
+                  if protocol != 'aurora':
+                     if os.path.exists(PATH + '/csvs/c1_probe.csv') and os.path.exists(
+                             PATH + '/csvs/c2_probe.csv'):
+                        sender1_rtt = pd.read_csv(PATH + '/csvs/c1_probe.csv')
+                        sender1_rtt = sender1_rtt[
+                           sender1_rtt['time'] > (flow_duration - keep_last_seconds)].reset_index(drop=True)
+                        sender2_rtt = pd.read_csv(PATH + '/csvs/c2_probe.csv')
+                        sender2_rtt = sender2_rtt[
+                           sender2_rtt['time'] > (flow_duration - keep_last_seconds)].reset_index(drop=True)
+                        if len(sender2_rtt) > len(sender1_rtt):
+                           sender2_rtt = sender2_rtt.tail(len(sender1_rtt)).reset_index(drop=True)
+                        else:
+                           sender1_rtt = sender1_rtt.tail(len(sender2_rtt)).reset_index(drop=True)
+                        avg_srtt = ((sender1_rtt['srtt'] + sender2_rtt['srtt']) / (2 * 1000)).mean()
+                        std_srtt = ((sender1_rtt['srtt'] + sender2_rtt['srtt']) / (2 * 1000)).std()
+                        efficiency_rtt = (2 * delay) / avg_srtt
+
+                     else:
+                        avg_srtt = None
+                        std_srtt = None
+                        efficiency_rtt = None
+                  else:
+                     if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
+                        sender1 = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds).reset_index(drop=True)
+                        sender2 = pd.read_csv(PATH + '/csvs/c2.csv').tail(keep_last_seconds).reset_index(drop=True)
+
+                        avg_srtt = ((sender1['rtt'] + sender2['rtt']) / 2).mean()
+                        std_srtt = ((sender1['rtt'] + sender2['rtt']) / 2).std()
+                        efficiency_rtt = (2 * delay) / avg_srtt
+                     else:
+                        avg_srtt = None
+                        std_srtt = None
+                        efficiency_rtt = None
+
+                  if os.path.exists(PATH + '/sysstat/dev_root.log'):
+                     systat = pd.read_csv(PATH + '/sysstat/dev_root.log', sep=';').rename(
+                        columns={"# hostname": "hostname"})
+                     s2eth2 = systat[systat['IFACE'] == 's2-eth2'].tail(keep_last_seconds)
+                     s2eth2['txMbps'] = s2eth2['txkB/s'] / 1000 * 8
+
+                     s2eth1 = systat[systat['IFACE'] == 's2-eth1'].tail(keep_last_seconds)
+
+                     s2eth1['rxMbps'] = s2eth1['rxkB/s'] / 1000 * 8
+
+                     avg_thr = s2eth2['txMbps'].mean()
+                     std_thr = s2eth2['txMbps'].std()
+                     efficiency_thr = avg_thr / bw
+
+                     efficiency_q_avg = (s2eth1['rxMbps'].reset_index(drop=True).divide(bw)).mean()
+                     efficiency_q_std = (s2eth1['rxMbps'].reset_index(drop=True).divide(bw)).std()
+
+                  else:
+                     avg_thr = None
+                     std_thr = None
+                     efficiency_thr = None
+                     efficiency_q_avg = None
+                     efficiency_q_std = None
+
+                  if protocol != 'aurora':
+                     if os.path.exists(PATH + '/sysstat/etcp_c1.log') and os.path.exists(
+                             PATH + '/sysstat/etcp_c2.log'):
+                        systat1 = pd.read_csv(PATH + '/sysstat/etcp_c1.log', sep=';').rename(
+                           columns={"# hostname": "hostname"})
+                        systat2 = pd.read_csv(PATH + '/sysstat/etcp_c2.log', sep=';').rename(
+                           columns={"# hostname": "hostname"})
+
+                        retr1 = systat1['retrans/s'].tail(keep_last_seconds)
+                        retr1 = retr1 * 1500 * 8 / 100000000
+
+                        retr2 = systat2['retrans/s'].tail(keep_last_seconds)
+                        retr2 = retr2 * 1500 * 8 / 100000000
+
+                        avg_retr = (retr1 + retr2).mean()
+                        std_retr = (retr1 + retr2).std()
+                     else:
+                        avg_retr = None
+                        std_retr = None
+                  else:
                      if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
                         sender1 = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds)
                         sender2 = pd.read_csv(PATH + '/csvs/c2.csv').tail(keep_last_seconds)
+                        retr1 = sender1['retr']
+                        retr1 = retr1 * 1500 * 8 / 100000000
+                        retr2 = sender2['retr']
+                        retr2 = retr2 * 1500 * 8 / 100000000
+                        avg_retr = (retr1 + retr2).mean()
+                        std_retr = (retr1 + retr2).std()
 
-                     if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
-                        receiver1_total = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
-                        receiver2_total = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
-                        receiver1_total['time'] = receiver1_total['time'].apply(lambda x: int(float(x)))
-                        receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
-
-                        receiver1_total = receiver1_total[(receiver1_total['time'] > start_time) & (receiver1_total['time'] < end_time)]
-                        receiver2_total = receiver2_total[(receiver2_total['time'] > start_time) & (receiver2_total['time'] < end_time)]
-
-
-
-                        receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
-                        receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
-                        avg_goodput = (receiver1['bandwidth'] + receiver2['bandwidth']).mean()
-                        std_goodput = (receiver1['bandwidth'] + receiver2['bandwidth']).std()
-                        jain_goodput_20 = receiver1['bandwidth'].mean()/receiver2['bandwidth'].mean()
-                        jain_goodput_total = receiver1_total['bandwidth'].mean()/receiver2_total[
-                           'bandwidth'].mean()
-
-                        efficiency_gdp = avg_goodput / bw
-                     else:
-                        avg_goodput = None
-                        std_goodput = None
-                        efficiency_gdp = None
-                        jain_goodput_20 = None
-                        jain_goodput_total = None
-
-                     if protocol != 'aurora':
-                        if os.path.exists(PATH + '/csvs/c1_probe.csv') and os.path.exists(
-                                PATH + '/csvs/c2_probe.csv'):
-                           sender1_rtt = pd.read_csv(PATH + '/csvs/c1_probe.csv')
-                           sender1_rtt = sender1_rtt[
-                              sender1_rtt['time'] > (flow_duration - keep_last_seconds)].reset_index(drop=True)
-                           sender2_rtt = pd.read_csv(PATH + '/csvs/c2_probe.csv')
-                           sender2_rtt = sender2_rtt[
-                              sender2_rtt['time'] > (flow_duration - keep_last_seconds)].reset_index(drop=True)
-                           if len(sender2_rtt) > len(sender1_rtt):
-                              sender2_rtt = sender2_rtt.tail(len(sender1_rtt)).reset_index(drop=True)
-                           else:
-                              sender1_rtt = sender1_rtt.tail(len(sender2_rtt)).reset_index(drop=True)
-                           avg_srtt = ((sender1_rtt['srtt'] + sender2_rtt['srtt']) / (2 * 1000)).mean()
-                           std_srtt = ((sender1_rtt['srtt'] + sender2_rtt['srtt']) / (2 * 1000)).std()
-                           efficiency_rtt = (2 * delay) / avg_srtt
-
-                        else:
-                           avg_srtt = None
-                           std_srtt = None
-                           efficiency_rtt = None
-                     else:
-                        if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
-                           sender1 = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds).reset_index(drop=True)
-                           sender2 = pd.read_csv(PATH + '/csvs/c2.csv').tail(keep_last_seconds).reset_index(drop=True)
-
-                           avg_srtt = ((sender1['rtt'] + sender2['rtt']) / 2).mean()
-                           std_srtt = ((sender1['rtt'] + sender2['rtt']) / 2).std()
-                           efficiency_rtt = (2 * delay) / avg_srtt
-                        else:
-                           avg_srtt = None
-                           std_srtt = None
-                           efficiency_rtt = None
-
-                     if os.path.exists(PATH + '/sysstat/dev_root.log'):
-                        systat = pd.read_csv(PATH + '/sysstat/dev_root.log', sep=';').rename(
-                           columns={"# hostname": "hostname"})
-                        s2eth2 = systat[systat['IFACE'] == 's2-eth2'].tail(keep_last_seconds)
-                        s2eth2['txMbps'] = s2eth2['txkB/s'] / 1000 * 8
-
-                        s2eth1 = systat[systat['IFACE'] == 's2-eth1'].tail(keep_last_seconds)
-
-                        s2eth1['rxMbps'] = s2eth1['rxkB/s'] / 1000 * 8
-
-                        avg_thr = s2eth2['txMbps'].mean()
-                        std_thr = s2eth2['txMbps'].std()
-                        efficiency_thr = avg_thr / bw
-
-                        efficiency_q_avg = (s2eth1['rxMbps'].reset_index(drop=True).divide(bw)).mean()
-                        efficiency_q_std = (s2eth1['rxMbps'].reset_index(drop=True).divide(bw)).std()
-
-                     else:
-                        avg_thr = None
-                        std_thr = None
-                        efficiency_thr = None
-                        efficiency_q_avg = None
-                        efficiency_q_std = None
-
-                     if protocol != 'aurora':
-                        if os.path.exists(PATH + '/sysstat/etcp_c1.log') and os.path.exists(
-                                PATH + '/sysstat/etcp_c2.log'):
-                           systat1 = pd.read_csv(PATH + '/sysstat/etcp_c1.log', sep=';').rename(
-                              columns={"# hostname": "hostname"})
-                           systat2 = pd.read_csv(PATH + '/sysstat/etcp_c2.log', sep=';').rename(
-                              columns={"# hostname": "hostname"})
-
-                           retr1 = systat1['retrans/s'].tail(keep_last_seconds)
-                           retr1 = retr1 * 1500 * 8 / 100000000
-
-                           retr2 = systat2['retrans/s'].tail(keep_last_seconds)
-                           retr2 = retr2 * 1500 * 8 / 100000000
-
-                           avg_retr = (retr1 + retr2).mean()
-                           std_retr = (retr1 + retr2).std()
-                        else:
-                           avg_retr = None
-                           std_retr = None
-                     else:
-                        if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
-                           sender1 = pd.read_csv(PATH + '/csvs/c1.csv').tail(keep_last_seconds)
-                           sender2 = pd.read_csv(PATH + '/csvs/c2.csv').tail(keep_last_seconds)
-                           retr1 = sender1['retr']
-                           retr1 = retr1 * 1500 * 8 / 100000000
-                           retr2 = sender2['retr']
-                           retr2 = retr2 * 1500 * 8 / 100000000
-                           avg_retr = (retr1 + retr2).mean()
-                           std_retr = (retr1 + retr2).std()
-
-                     data_entry = [protocol, bw, delay, mult, run, avg_thr, avg_goodput, avg_srtt, std_thr, std_goodput,
-                                   std_srtt, avg_retr, std_retr, efficiency_thr, efficiency_gdp, efficiency_rtt,
-                                   efficiency_q_avg, efficiency_q_std, jain_goodput_20, jain_goodput_total]
-                     data.append(data_entry)
+                  data_entry = [protocol, bw, delay, mult, run, avg_thr, avg_goodput, avg_srtt, std_thr, std_goodput,
+                                std_srtt, avg_retr, std_retr, efficiency_thr, efficiency_gdp, efficiency_rtt,
+                                efficiency_q_avg, efficiency_q_std, jain_goodput_20, jain_goodput_total]
+                  data.append(data_entry)
 
    summary_data = pd.DataFrame(data,
                                columns=['protocol', 'bandwidth', 'delay', 'qmult','loss', 'run', 'avg_thr', 'avg_goodput',
