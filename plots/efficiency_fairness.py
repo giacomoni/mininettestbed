@@ -52,9 +52,9 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)].set_index('time')
 
                if receiver1['time'].values != receiver2['time'].values:
-                   print('DIFFERENT')
-               else:
-                   print('EQUAL')
+                   print(receiver1['time'].values)
+                   print(receiver2['time'].values)
+                   print("\n")
                # Find which flow starts first
                if len(receiver1[receiver1['time'] < 25]) > 0:
                  receiver_start = receiver1[receiver1['time'] <= 25]
