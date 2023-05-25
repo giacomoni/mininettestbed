@@ -53,14 +53,14 @@ for protocol in PROTOCOLS:
                  receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
                  receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
 
-                 receiver1_total = receiver1_total.set_index('time')['bandwidth']
-                 receiver2_total = receiver2_total.set_index('time')['bandwidth']
+                 receiver1_total = receiver1_total.set_index('time')
+                 receiver2_total = receiver2_total.set_index('time')
 
-                 receiver1 = receiver1.set_index('time')['bandwidth']
-                 receiver2 = receiver2.set_index('time')['bandwidth']
+                 receiver1 = receiver1.set_index('time')
+                 receiver2 = receiver2.set_index('time')
 
-                 total = receiver1_total.join(receiver2_total, how='outer', lsuffix='1', rsuffix='2')
-                 partial = receiver1.join(receiver2, how='outer', lsuffix='1', rsuffix='2')
+                 total = receiver1_total.join(receiver2_total, how='outer', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
+                 partial = receiver1.join(receiver2, how='outer', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
 
                  total = total.dropna()
                  partial = partial.dropna()
