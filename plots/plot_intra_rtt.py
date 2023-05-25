@@ -26,8 +26,7 @@ for protocol in PROTOCOLS:
   for bw in BWS:
      for delay in DELAYS:
         for mult in QMULTS:
-
-           BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * delay * (10 ** -3) / 8)
+           BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * 10 * (10 ** -3) / 8)
            BDP_IN_PKTS = BDP_IN_BYTES / 1500
 
            goodput_ratios_20 = []
@@ -71,6 +70,7 @@ for protocol in PROTOCOLS:
                  std_goodput = None
                  jain_goodput_20 = None
                  jain_goodput_total = None
+                 print("Folder not found.")
 
            goodput_ratios_20 = np.concatenate(goodput_ratios_20, axis=0)
            goodput_ratios_total = np.concatenate(goodput_ratios_total, axis=0)
