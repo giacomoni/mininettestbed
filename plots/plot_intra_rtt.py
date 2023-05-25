@@ -94,9 +94,16 @@ ax = axes
 
 
 
-ax.errorbar(cubic_data.index, cubic_data['goodput_ratio_20_mean'], yerr=cubic_data['goodput_ratio_20_std'],marker='x',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5, label='cubic')
-ax.errorbar(orca_data.index,orca_data['goodput_ratio_20_mean'], yerr=orca_data['goodput_ratio_20_std'],marker='^',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='orca', linestyle='--')
-ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_20_mean'], yerr=aurora_data['goodput_ratio_20_std'],marker='+',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='aurora', linestyle='-.')
+markers, caps, bars = ax.errorbar(cubic_data.index, cubic_data['goodput_ratio_20_mean'], yerr=cubic_data['goodput_ratio_20_std'],marker='x',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5, label='cubic')
+[bar.set_alpha(0.5) for bar in bars]
+[cap.set_alpha(0.5) for cap in caps]
+markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_20_mean'], yerr=orca_data['goodput_ratio_20_std'],marker='^',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='orca', linestyle='--')
+[bar.set_alpha(0.5) for bar in bars]
+[cap.set_alpha(0.5) for cap in caps]
+markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_20_mean'], yerr=aurora_data['goodput_ratio_20_std'],marker='+',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='aurora', linestyle='-.')
+[bar.set_alpha(0.5) for bar in bars]
+[cap.set_alpha(0.5) for cap in caps]
+
 ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
@@ -112,9 +119,16 @@ ax = axes
 
 
 
-ax.errorbar(cubic_data.index,cubic_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='x',elinewidth=0.5, capsize=2, capthick=0.5,linewidth=LINEWIDTH, label='cubic')
-ax.errorbar(orca_data.index,orca_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='^',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='orca', linestyle='--')
-ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_total_mean'], yerr=aurora_data['goodput_ratio_total_std'],marker='+',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='aurora', linestyle='-.')
+markers, caps, bars = ax.errorbar(cubic_data.index,cubic_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='x',elinewidth=0.5, capsize=2, capthick=0.5,linewidth=LINEWIDTH, label='cubic')
+[bar.set_alpha(0.5) for bar in bars]
+[cap.set_alpha(0.5) for cap in caps]
+markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='^',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='orca', linestyle='--')
+[bar.set_alpha(0.5) for bar in bars]
+[cap.set_alpha(0.5) for cap in caps]
+markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_total_mean'], yerr=aurora_data['goodput_ratio_total_std'],marker='+',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='aurora', linestyle='-.')
+[bar.set_alpha(0.5) for bar in bars]
+[cap.set_alpha(0.5) for cap in caps]
+
 ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
