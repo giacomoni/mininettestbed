@@ -7,7 +7,7 @@ import os
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
-ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_correct/fifo"
+ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2_correct/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BWS = [100]
 DELAYS = [20, 30, 40, 50, 60, 70, 80, 90, 100]
