@@ -7,7 +7,7 @@ import os
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
-ROOT_PATH = "/home/luca/mininettestbed/results_fairness_async_2/fifo"
+ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BWS = [100]
 DELAYS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -20,9 +20,8 @@ data = []
 
 flow_duration = 100
 keep_last_seconds = 20
-start_time=25
+start_time=0
 end_time=100
-
 for protocol in PROTOCOLS:
   for bw in BWS:
      for delay in DELAYS:
@@ -35,7 +34,7 @@ for protocol in PROTOCOLS:
            goodput_ratios_total = []
 
            for run in RUNS:
-              PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
+              PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
               if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
                  receiver1_total = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
                  receiver2_total = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)

@@ -5,8 +5,6 @@ import scienceplots
 plt.style.use('science')
 import os
 from matplotlib.ticker import ScalarFormatter
-from functools import reduce
-
 
 def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=True):
 
@@ -76,8 +74,8 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                ratios_runs.append(ratio_tmp)
                sums_runs.append(sum_tmp)
 
-      ratios[protocol] = reduce(lambda df1, df2: pd.merge(df1, df2, how='inner'), ratios_runs)
-      sums[protocol] = reduce(lambda df1, df2: pd.merge(df1, df2, how='inner'), sums_runs)
+      ratios[protocol] = pd.concat(ratios_runs, axis=1)
+      sums[protocol] = pd.concat(sums_runs, axis=1)
 
    return sums, ratios
 
