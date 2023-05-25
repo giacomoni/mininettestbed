@@ -82,9 +82,9 @@ summary_data = pd.DataFrame(data,
                            columns=['protocol', 'bandwidth', 'delay', 'delay_ratio','qmult', 'goodput_ratio_20_mean',
                                     'goodput_ratio_20_std', 'goodput_ratio_total_mean', 'goodput_ratio_total_std'])
 
-orca_data = summary_data[summary_data['protocol'] == 'orca'].set_index('delay')
-cubic_data = summary_data[summary_data['protocol'] == 'cubic'].set_index('delay')
-aurora_data = summary_data[summary_data['protocol'] == 'aurora'].set_index('delay')
+orca_data = summary_data[summary_data['protocol'] == 'orca'].set_index('delay_ratio')
+cubic_data = summary_data[summary_data['protocol'] == 'cubic'].set_index('delay_ratio')
+aurora_data = summary_data[summary_data['protocol'] == 'aurora'].set_index('delay_ratio')
 
 LINEWIDTH = 1
 ELINEWIDTH = 0.75
