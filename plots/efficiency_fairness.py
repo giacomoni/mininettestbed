@@ -60,13 +60,13 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                  receiver_end = receiver1[receiver1['time'] > 100].drop_duplicates('time')
 
 
-               tmp_middle = receiver1_middle.join(receiver2_middle, on='time', how='inner', lsuffix='1', rsuffix='2').drop_duplicates('time')
+               tmp_middle = receiver1_middle.join(receiver2_middle, on='time', how='left', lsuffix='1', rsuffix='2').drop_duplicates('time')
                tmp_middle = tmp_middle.set_index('time')
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
 
 
-               sum_tmp = pd.concat([receiver_start/100,tmp_middle.sum(axis=1)/100, receiver_end/100])
+               sum_tmp = pd.concat([receiver_start/100,(tmp_middle['bandiwdth1'] + tmp_middle['bandiwdth2'])/100, receiver_end/100])
                ratio_tmp =  pd.concat([receiver_start/receiver_start,tmp_middle.min(axis=1)/tmp_middle.max(axis=1), receiver_end/receiver_end])
 
                ratios_runs.append(ratio_tmp)
@@ -102,7 +102,7 @@ if __name__ == '__main__':
             if i == 0:
                 ax.set(ylabel='Normalised Aggregate Goodput')
             ax.set(ylim=[0, 1.25], xlim=[0, 125])
-            ax.set_title('x%s' % (delay / 10))
+            ax.set_title('%s ms' % (delay ))
             ax.legend()
             ax.grid()
 
@@ -143,7 +143,7 @@ if __name__ == '__main__':
                 ax.set(ylabel='Normalised Aggregate Goodput')
 
             ax.set(ylim=[0, 1.25], xlim=[0, 125])
-            ax.set_title('x%s' % (delay / 10))
+            ax.set_title('%s ms' % delay )
             ax.legend()
             ax.grid()
 
