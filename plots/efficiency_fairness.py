@@ -41,7 +41,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                receiver1 = receiver1[(receiver1['time'] > 0) & (receiver1['time'] <= 100)]
                receiver2 = receiver2[(receiver2['time'] > 0) & (receiver2['time'] <= 100)]
 
-               tmp = pd.concat([receiver1,receiver2], axis=1)
+               tmp = receiver1.merge(receiver2, how='inner', on='time')
 
                tmp = tmp.set_index('time')
 
@@ -51,9 +51,6 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)]
                receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)]
 
-               print(receiver1_middle['time'].values)
-               print(receiver2_middle['time'].values)
-               print("\n")
 
                receiver1_middle = receiver1_middle.set_index('time')
                receiver2_middle = receiver2_middle.set_index('time')
@@ -67,7 +64,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                  receiver_end = receiver1[receiver1['time'] > 100]
 
 
-               tmp_middle = pd.concat([receiver1_middle,receiver2_middle], axis=1)
+               tmp_middle = receiver1_middle.merge(receiver2_middle, how='inner', on='time')
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
 
