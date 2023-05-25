@@ -48,13 +48,17 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                ratios_runs.append(tmp.min(axis=1)/tmp.max(axis=1))
                sums_runs.append(tmp.sum(axis=1) / 100)
             else:
-               receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)].set_index('time')
-               receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)].set_index('time')
+               receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)]
+               receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)]
 
                if receiver1_middle['time'].values != receiver2_middle['time'].values:
                    print(receiver1_middle['time'].values)
                    print(receiver2_middle['time'].values)
                    print("\n")
+
+               receiver1_middle = receiver1_middle.set_index()
+               receiver2_middle = receiver2_middle.set_index()
+
                # Find which flow starts first
                if len(receiver1[receiver1['time'] < 25]) > 0:
                  receiver_start = receiver1[receiver1['time'] <= 25]
