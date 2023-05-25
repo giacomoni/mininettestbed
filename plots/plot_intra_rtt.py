@@ -39,11 +39,17 @@ for protocol in PROTOCOLS:
               if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
                  receiver1_total = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
                  receiver2_total = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
-                 receiver1_total['time'] = receiver1_total['time'].apply(lambda x: int(float(x)))
-                 receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
+
 
                  receiver1_total = receiver1_total[(receiver1_total['time'] > start_time) & (receiver1_total['time'] < end_time)]
                  receiver2_total = receiver2_total[(receiver2_total['time'] > start_time) & (receiver2_total['time'] < end_time)]
+
+                 if(len(receiver1_total['bandwidth']) != len(receiver2_total['bandwidth'])):
+                     print(receiver1_total['bandwidth'])
+                     print(receiver2_total['bandwidth'])
+
+                 receiver1_total['time'] = receiver1_total['time'].apply(lambda x: int(float(x)))
+                 receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
 
                  receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
                  receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
