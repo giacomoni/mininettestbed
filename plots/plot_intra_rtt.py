@@ -106,7 +106,7 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_2
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio', ylim=[0.02,1])
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
@@ -131,7 +131,7 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_t
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio',ylim=[0.02,1])
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
