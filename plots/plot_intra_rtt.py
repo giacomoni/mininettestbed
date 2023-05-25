@@ -106,13 +106,13 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_2
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='linear',xlabel='One way delay ratio', ylabel='Goodput Ratio', ylim=[0.009,1])
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio', ylim=[0.009,1])
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
 ax.grid()
 
-plt.savefig('goodput_ratio_20.png', dpi=720)
+plt.savefig('goodput_ratio_20_log.png', dpi=720)
 
 
 
@@ -131,10 +131,10 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_t
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='linear',xlabel='One way delay ratio', ylabel='Goodput Ratio',ylim=[0.009,1])
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio',ylim=[0.009,1])
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
 ax.grid()
 
-plt.savefig('goodput_ratio.png', dpi=720)
+plt.savefig('goodput_ratio_log.png', dpi=720)
