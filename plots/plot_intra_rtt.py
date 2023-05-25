@@ -49,8 +49,8 @@ for protocol in PROTOCOLS:
                  receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
 
                  if(len(receiver1_total['bandwidth']) != len(receiver2_total['bandwidth'])):
-                     print(receiver1_total['bandwidth'])
-                     print(receiver2_total['bandwidth'])
+                     print(receiver1_total['time'])
+                     print(receiver2_total['time'])
 
                  receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
                  receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
