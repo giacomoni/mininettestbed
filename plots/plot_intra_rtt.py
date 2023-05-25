@@ -59,8 +59,8 @@ for protocol in PROTOCOLS:
                  receiver1 = receiver1.set_index('time')
                  receiver2 = receiver2.set_index('time')
 
-                 total = receiver1_total.join(receiver2_total, how='outer', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
-                 partial = receiver1.join(receiver2, how='outer', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
+                 total = receiver1_total.join(receiver2_total, how='inner', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
+                 partial = receiver1.join(receiver2, how='inner', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
 
                  total = total.dropna()
                  partial = partial.dropna()
