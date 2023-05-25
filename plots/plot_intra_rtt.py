@@ -59,8 +59,8 @@ for protocol in PROTOCOLS:
                  receiver1 = receiver1.set_index('time')
                  receiver2 = receiver2.set_index('time')
 
-                 total = pd.concat([receiver1_total,receiver2_total], axis=1, join='inner')
-                 partial = pd.concat([receiver1,receiver2], axis=1, join='inner')
+                 total = receiver1_total.join(receiver2_total, how='outer', lsuffix='1', rsuffix='2')
+                 partial = receiver1.join(receiver2, how='outer', lsuffix='1', rsuffix='2')
 
                  total = total.dropna()
                  partial = partial.dropna()
