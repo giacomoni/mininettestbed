@@ -80,13 +80,13 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
    return sums, ratios
 
 if __name__ == '__main__':
-    ROOT_PATH = "/home/luca/mininettestbed/results_fairness_async_2/fifo"
+    ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
     PROTOCOLS = ['cubic', 'orca', 'aurora']
     BW = 100
     DELAYS = [10,20,30,40,50]
     QMULT = 1
     RUNS = [1, 2, 3, 4, 5]
-    SYNC = False
+    SYNC = True
 
     fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 4))
 
