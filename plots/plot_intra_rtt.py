@@ -83,18 +83,42 @@ summary_data = pd.DataFrame(data,
                            columns=['protocol', 'bandwidth', 'delay', 'qmult', 'goodput_ratio_20_mean',
                                     'goodput_ratio_20_std', 'goodput_ratio_total_mean', 'goodput_ratio_total_std'])
 
-print(summary_data)
-# summary_data[['avg_retr', 'std_retr']] = summary_data[['avg_retr', 'std_retr']].fillna(value=0)
-# summary_data = summary_data.dropna()
-#
-# orca_summary_data = summary_data[summary_data['protocol'] == 'orca']
-# cubic_summary_data = summary_data[summary_data['protocol'] == 'cubic']
-# aurora_summary_data = summary_data[summary_data['protocol'] == 'aurora']
-#
-# orca_data = orca_summary_data.groupby('delay').mean()
-# cubic_data = cubic_summary_data.groupby('delay').mean()
-# aurora_data = aurora_summary_data.groupby('delay').mean()
-#
-# orca_error = orca_summary_data.groupby('delay').std()
-# cubic_error = cubic_summary_data.groupby('delay').std()
-# aurora_error = aurora_summary_data.groupby('delay').std()
+orca_data = summary_data[summary_data['protocol'] == 'orca']
+cubic_data = summary_data[summary_data['protocol'] == 'cubic']
+aurora_data = summary_data[summary_data['protocol'] == 'aurora']
+
+LINEWIDTH = 1
+
+fig, axes = plt.subplots(nrows=1, ncols=1)
+ax = axes
+
+
+
+ax.errorbar(cubic_data.index, cubic_data['goodput_ratio_20_mean'], yerr=cubic_data['goodput_ratio_20_std'],marker='x',linewidth=LINEWIDTH, label='cubic')
+ax.errorbar(orca_data.index,orca_data['goodput_ratio_20_mean'], yerr=orca_data['goodput_ratio_20_std'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
+ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_20_mean'], yerr=aurora_data['goodput_ratio_20_std'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+for axis in [ax.xaxis, ax.yaxis]:
+    axis.set_major_formatter(ScalarFormatter())
+ax.legend()
+ax.grid()
+
+plt.savefig('goodput_ratio_20.png', dpi=720)
+
+LINEWIDTH = 1
+
+fig, axes = plt.subplots(nrows=1, ncols=1)
+ax = axes
+
+
+
+ax.errorbar(cubic_data.index,cubic_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='x',linewidth=LINEWIDTH, label='cubic')
+ax.errorbar(orca_data.index,orca_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='^',linewidth=LINEWIDTH, label='orca', linestyle='--')
+ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_total_mean'], yerr=aurora_data['goodput_ratio_total_std'],marker='+',linewidth=LINEWIDTH, label='aurora', linestyle='-.')
+ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio')
+for axis in [ax.xaxis, ax.yaxis]:
+    axis.set_major_formatter(ScalarFormatter())
+ax.legend()
+ax.grid()
+
+plt.savefig('goodput_ratio.png', dpi=720)
