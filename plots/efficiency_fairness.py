@@ -38,8 +38,8 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
             receiver2['bandwidth'] = receiver2['bandwidth'].ewm(alpha=0.5).mean()
 
             if sync:
-               receiver1 = receiver1[(receiver1['time'] > 0) & (receiver1['time'] <= 100)]
-               receiver2 = receiver2[(receiver2['time'] > 0) & (receiver2['time'] <= 100)]
+               receiver1 = receiver1[(receiver1['time'] > 0) & (receiver1['time'] <= 100)].drop_duplicates('time')
+               receiver2 = receiver2[(receiver2['time'] > 0) & (receiver2['time'] <= 100)].drop_duplicates('time')
 
                tmp = receiver1.join(receiver2, on='time', how='outer', lsuffix='1', rsuffix='2')
 
@@ -48,8 +48,8 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                ratios_runs.append(tmp.min(axis=1)/tmp.max(axis=1))
                sums_runs.append(tmp.sum(axis=1) / 100)
             else:
-               receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)]
-               receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)]
+               receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)].drop_duplicates('time')
+               receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)].drop_duplicates('time')
 
                # Find which flow starts first
                if len(receiver1[receiver1['time'] < 25]) > 0:
