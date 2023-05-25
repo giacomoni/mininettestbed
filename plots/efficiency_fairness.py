@@ -34,8 +34,8 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
             receiver1 = receiver1.drop_duplicates('time')
             receiver2 = receiver2.drop_duplicates('time')
 
-            receiver1['bandwidth'] = receiver1['bandwidth'].ewm(alpha=0.25).mean()
-            receiver2['bandwidth'] = receiver2['bandwidth'].ewm(alpha=0.25).mean()
+            receiver1['bandwidth'] = receiver1['bandwidth'].ewm(alpha=0.5).mean()
+            receiver2['bandwidth'] = receiver2['bandwidth'].ewm(alpha=0.5).mean()
 
             if sync:
                receiver1 = receiver1[(receiver1['time'] > 0) & (receiver1['time'] <= 100)]
