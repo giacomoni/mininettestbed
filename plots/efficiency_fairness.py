@@ -38,35 +38,34 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
             receiver2['bandwidth'] = receiver2['bandwidth'].ewm(alpha=0.5).mean()
 
             if sync:
-               receiver1 = receiver1[(receiver1['time'] > 0) & (receiver1['time'] <= 100)].drop_duplicates('time')
-               receiver2 = receiver2[(receiver2['time'] > 0) & (receiver2['time'] <= 100)].drop_duplicates('time')
+               receiver1 = receiver1[(receiver1['time'] > 0) & (receiver1['time'] <= 100)]
+               receiver2 = receiver2[(receiver2['time'] > 0) & (receiver2['time'] <= 100)]
 
-               tmp = receiver1.join(receiver2, on='time', how='outer', lsuffix='1', rsuffix='2')
+               tmp = pd.concat([receiver1,receiver2], axis=1)
 
                tmp = tmp.set_index('time')
 
                ratios_runs.append(tmp.min(axis=1)/tmp.max(axis=1))
                sums_runs.append(tmp.sum(axis=1) / 100)
             else:
-               receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)].drop_duplicates('time')
-               receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)].drop_duplicates('time')
+               receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)].set_index('time')
+               receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)].set_index('time')
 
                # Find which flow starts first
                if len(receiver1[receiver1['time'] < 25]) > 0:
-                 receiver_start = receiver1[receiver1['time'] <= 25].drop_duplicates('time')
-                 receiver_end = receiver2[receiver2['time'] > 100].drop_duplicates('time')
+                 receiver_start = receiver1[receiver1['time'] <= 25]
+                 receiver_end = receiver2[receiver2['time'] > 100]
                else:
-                 receiver_start = receiver2[receiver2['time'] <= 25].drop_duplicates('time')
-                 receiver_end = receiver1[receiver1['time'] > 100].drop_duplicates('time')
+                 receiver_start = receiver2[receiver2['time'] <= 25]
+                 receiver_end = receiver1[receiver1['time'] > 100]
 
 
-               tmp_middle = receiver1_middle.join(receiver2_middle, on='time', how='left', lsuffix='1', rsuffix='2').drop_duplicates('time')
-               tmp_middle = tmp_middle.set_index('time')
+               tmp_middle = pd.concat([receiver1_middle,receiver2_middle], axis=1)
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
 
 
-               sum_tmp = pd.concat([receiver_start/100,(tmp_middle['bandiwdth1'] + tmp_middle['bandiwdth2'])/100, receiver_end/100])
+               sum_tmp = pd.concat([receiver_start/100,tmp_middle.sum(axis=1)/100, receiver_end/100])
                ratio_tmp =  pd.concat([receiver_start/receiver_start,tmp_middle.min(axis=1)/tmp_middle.max(axis=1), receiver_end/receiver_end])
 
                ratios_runs.append(ratio_tmp)
