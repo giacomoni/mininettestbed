@@ -44,8 +44,8 @@ for protocol in PROTOCOLS:
                  receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
 
 
-                 receiver1_total = receiver1_total[(receiver1_total['time'] > start_time) & (receiver1_total['time'] <= end_time)]
-                 receiver2_total = receiver2_total[(receiver2_total['time'] > start_time) & (receiver2_total['time'] <= end_time)]
+                 receiver1_total = receiver1_total[(receiver1_total['time'] > start_time) & (receiver1_total['time'] < end_time)]
+                 receiver2_total = receiver2_total[(receiver2_total['time'] > start_time) & (receiver2_total['time'] < end_time)]
 
                  receiver1_total = receiver1_total.drop_duplicates('time')
                  receiver2_total = receiver2_total.drop_duplicates('time')
