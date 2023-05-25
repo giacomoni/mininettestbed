@@ -51,7 +51,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                receiver1_middle = receiver1[(receiver1['time'] > 25) & (receiver1['time'] <= 100)].set_index('time')
                receiver2_middle = receiver2[(receiver2['time'] > 25) & (receiver2['time'] <= 100)].set_index('time')
 
-               if receiver1['time'] != receiver2['time']:
+               if receiver1['time'].values != receiver2['time'].values:
                    print('DIFFERENT')
                else:
                    print('EQUAL')
