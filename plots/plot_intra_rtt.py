@@ -47,8 +47,8 @@ for protocol in PROTOCOLS:
 
                  receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
                  receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
-                 goodput_ratios_20.extend(np.minimum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy())/np.maximum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy()))
-                 goodput_ratios_total.extend(np.minimum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy())/np.maximum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy()))
+                 goodput_ratios_20.append(np.minimum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy())/np.maximum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy()))
+                 goodput_ratios_total.append(np.minimum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy())/np.maximum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy()))
               else:
                  avg_goodput = None
                  std_goodput = None
