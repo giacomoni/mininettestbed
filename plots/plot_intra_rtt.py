@@ -53,11 +53,11 @@ for protocol in PROTOCOLS:
                  receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
                  receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
 
-                 receiver1_total = receiver1_total.set_index('time')
-                 receiver2_total = receiver2_total.set_index('time')
+                 receiver1_total = receiver1_total.set_index('time')['bandwidth']
+                 receiver2_total = receiver2_total.set_index('time')['bandwidth']
 
-                 receiver1 = receiver1.set_index('time')
-                 receiver2 = receiver2.set_index('time')
+                 receiver1 = receiver1.set_index('time')['bandwidth']
+                 receiver2 = receiver2.set_index('time')['bandwidth']
 
                  total = receiver1_total.join(receiver2_total, how='outer', lsuffix='1', rsuffix='2')
                  partial = receiver1.join(receiver2, how='outer', lsuffix='1', rsuffix='2')
@@ -65,11 +65,8 @@ for protocol in PROTOCOLS:
                  total = total.dropna()
                  partial = partial.dropna()
 
-                 print(total)
-                 print(partial)
-                 exit()
-                 goodput_ratios_20.append(np.minimum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy())/np.maximum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy()))
-                 goodput_ratios_total.append(np.minimum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy())/np.maximum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy()))
+                 goodput_ratios_20.append(partial.min(axis=1)/partial.max(axis=1))
+                 goodput_ratios_total.append(total.min(axis=1)/total.max(axis=1))
               else:
                  avg_goodput = None
                  std_goodput = None
