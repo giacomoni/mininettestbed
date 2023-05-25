@@ -20,7 +20,7 @@ data = []
 
 flow_duration = 100
 keep_last_seconds = 20
-start_time=0
+start_time=25
 end_time=100
 for protocol in PROTOCOLS:
   for bw in BWS:
