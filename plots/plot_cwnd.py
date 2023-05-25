@@ -39,6 +39,8 @@ for protocol in PROTOCOLS:
 
            sender1['time'] = sender1['time'].apply(lambda x: float(x))
            sender2['time'] = sender2['time'].apply(lambda x: float(x))
+        else:
+            print("Folder %s not found" % (PATH))
      else:
         if os.path.exists(PATH + '/csvs/c1.csv') and os.path.exists(PATH + '/csvs/c2.csv'):
            sender1 = pd.read_csv(PATH + '/csvs/c1.csv').reset_index(drop=True)
@@ -52,6 +54,8 @@ for protocol in PROTOCOLS:
 
            sender1['bandwidth'] = sender1['bandwidth'].ewm(alpha=0.5).mean()
            sender2['bandwidth'] = sender2['bandwidth'].ewm(alpha=0.5).mean()
+        else:
+            print("Folder %s not found" % (PATH))
 
      series['c1'] = sender1
      series['c2'] = sender2
