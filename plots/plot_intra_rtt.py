@@ -58,8 +58,8 @@ for protocol in PROTOCOLS:
                  receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
 
                  if(len(receiver1['bandwidth']) != len(receiver2['bandwidth'])):
-                     print(receiver1['bandwidth'])
-                     print(receiver2['bandwidth'])
+                     print(receiver1['time'])
+                     print(receiver2['time'])
                  goodput_ratios_20.append(np.minimum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy())/np.maximum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy()))
                  goodput_ratios_total.append(np.minimum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy())/np.maximum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy()))
               else:
