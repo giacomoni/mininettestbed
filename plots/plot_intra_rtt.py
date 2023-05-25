@@ -88,19 +88,22 @@ cubic_data = summary_data[summary_data['protocol'] == 'cubic'].set_index('delay'
 aurora_data = summary_data[summary_data['protocol'] == 'aurora'].set_index('delay')
 
 LINEWIDTH = 1
+ELINEWIDTH = 0.75
+CAPTHICK = ELINEWIDTH
+CAPSIZE= 2
 
 fig, axes = plt.subplots(nrows=1, ncols=1)
 ax = axes
 
 
 
-markers, caps, bars = ax.errorbar(cubic_data.index, cubic_data['goodput_ratio_20_mean'], yerr=cubic_data['goodput_ratio_20_std'],marker='x',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5, label='cubic')
+markers, caps, bars = ax.errorbar(cubic_data.index, cubic_data['goodput_ratio_20_mean'], yerr=cubic_data['goodput_ratio_20_std'],marker='x',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK, label='cubic')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_20_mean'], yerr=orca_data['goodput_ratio_20_std'],marker='^',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='orca', linestyle='--')
+markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_20_mean'], yerr=orca_data['goodput_ratio_20_std'],marker='^',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='orca', linestyle='--')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_20_mean'], yerr=aurora_data['goodput_ratio_20_std'],marker='+',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='aurora', linestyle='-.')
+markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_20_mean'], yerr=aurora_data['goodput_ratio_20_std'],marker='+',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='aurora', linestyle='-.')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
@@ -112,20 +115,20 @@ ax.grid()
 
 plt.savefig('goodput_ratio_20.png', dpi=720)
 
-LINEWIDTH = 1
+
 
 fig, axes = plt.subplots(nrows=1, ncols=1)
 ax = axes
 
 
 
-markers, caps, bars = ax.errorbar(cubic_data.index,cubic_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='x',elinewidth=0.5, capsize=2, capthick=0.5,linewidth=LINEWIDTH, label='cubic')
+markers, caps, bars = ax.errorbar(cubic_data.index,cubic_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='x',elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,linewidth=LINEWIDTH, label='cubic')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='^',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='orca', linestyle='--')
+markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='^',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='orca', linestyle='--')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_total_mean'], yerr=aurora_data['goodput_ratio_total_std'],marker='+',linewidth=LINEWIDTH, elinewidth=0.5, capsize=2, capthick=0.5,label='aurora', linestyle='-.')
+markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_total_mean'], yerr=aurora_data['goodput_ratio_total_std'],marker='+',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='aurora', linestyle='-.')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
