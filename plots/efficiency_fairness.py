@@ -5,6 +5,8 @@ import scienceplots
 plt.style.use('science')
 import os
 from matplotlib.ticker import ScalarFormatter
+from functools import reduce
+
 
 def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=True):
 
@@ -67,6 +69,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                tmp_middle = receiver1_middle.merge(receiver2_middle, how='inner', on='time')
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
+               tmp_middle = tmp_middle.set_index('time')
 
                sum_tmp = pd.concat([receiver_start/100,tmp_middle.sum(axis=1)/100, receiver_end/100])
                ratio_tmp =  pd.concat([receiver_start/receiver_start,tmp_middle.min(axis=1)/tmp_middle.max(axis=1), receiver_end/receiver_end])
@@ -74,8 +77,8 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                ratios_runs.append(ratio_tmp)
                sums_runs.append(sum_tmp)
 
-      ratios[protocol] = pd.concat(ratios_runs, axis=1)
-      sums[protocol] = pd.concat(sums_runs, axis=1)
+      ratios[protocol] = reduce(lambda df1, df2: pd.merge(df1, df2, how='inner'), ratios_runs)
+      sums[protocol] = reduce(lambda df1, df2: pd.merge(df1, df2, how='inner'), sums_runs)
 
    return sums, ratios
 
