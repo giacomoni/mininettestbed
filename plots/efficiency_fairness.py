@@ -60,7 +60,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                  receiver_end = receiver1[receiver1['time'] > 100].drop_duplicates('time')
 
 
-               tmp_middle = receiver1_middle.join(receiver2_middle, on='time', how='outer', lsuffix='1', rsuffix='2').drop_duplicates('time')
+               tmp_middle = receiver1_middle.join(receiver2_middle, on='time', how='inner', lsuffix='1', rsuffix='2').drop_duplicates('time')
                tmp_middle = tmp_middle.set_index('time')
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
