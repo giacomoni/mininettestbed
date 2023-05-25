@@ -64,7 +64,7 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
                receiver_start = receiver_start.set_index('time')
                receiver_end = receiver_end.set_index('time')
 
-
+               print(tmp_middle.columns)
                sum_tmp = pd.concat([receiver_start/100,tmp_middle.sum(axis=1)/100, receiver_end/100])
                ratio_tmp =  pd.concat([receiver_start/receiver_start,tmp_middle.min(axis=1)/tmp_middle.max(axis=1), receiver_end/receiver_end])
 
