@@ -13,14 +13,14 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
 
    for protocol in PROTOCOLS:
 
-      BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
+      BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * 10 * (10 ** -3) / 8)
       BDP_IN_PKTS = BDP_IN_BYTES / 1500
 
       ratios_runs = []
       sums_runs = []
 
       for run in RUNS:
-         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
+         PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, run)
          if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
             receiver1 = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
             receiver2 = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
@@ -80,15 +80,15 @@ def fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, DELAY, QMULT, RUNS, sync=T
    return sums, ratios
 
 if __name__ == '__main__':
-    ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
+    ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2_correct/fifo"
     PROTOCOLS = ['cubic', 'orca', 'aurora']
     BW = 100
-    DELAYS = [10,20,30,40,50]
+    DELAYS = [20,30,40,50]
     QMULT = 1
     RUNS = [1, 2, 3, 4, 5]
-    SYNC = True
-    XLIM = [0,100]
-    fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 4))
+    SYNC = False
+    XLIM = [0,125]
+    fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(15, 4))
 
     for i, delay in enumerate(DELAYS):
         sums, ratios = fairness_and_efficiency(ROOT_PATH, PROTOCOLS, BW, delay, QMULT, RUNS, SYNC)
