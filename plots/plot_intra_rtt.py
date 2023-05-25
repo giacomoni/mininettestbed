@@ -7,10 +7,10 @@ import os
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
-ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_intra_rtt/fifo"
+ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_correct/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BWS = [100]
-DELAYS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+DELAYS = [20, 30, 40, 50, 60, 70, 80, 90, 100]
 QMULTS = [1]
 RUNS = [1, 2, 3, 4, 5]
 LOSSES=[0]
@@ -34,7 +34,7 @@ for protocol in PROTOCOLS:
            goodput_ratios_total = []
 
            for run in RUNS:
-              PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
+              PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_2flows_22tcpbuf_%s/run%s' % (bw,delay,int(mult * BDP_IN_PKTS),protocol,run)
               if os.path.exists(PATH + '/csvs/x1.csv') and os.path.exists(PATH + '/csvs/x2.csv'):
                  receiver1_total = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
                  receiver2_total = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
@@ -75,11 +75,11 @@ for protocol in PROTOCOLS:
            goodput_ratios_20 = np.concatenate(goodput_ratios_20, axis=0)
            goodput_ratios_total = np.concatenate(goodput_ratios_total, axis=0)
 
-           data_entry = [protocol, bw, delay, mult, goodput_ratios_20.mean(), goodput_ratios_20.std(), goodput_ratios_total.mean(), goodput_ratios_total.std()]
+           data_entry = [protocol, bw, delay, delay/10, mult, goodput_ratios_20.mean(), goodput_ratios_20.std(), goodput_ratios_total.mean(), goodput_ratios_total.std()]
            data.append(data_entry)
 
 summary_data = pd.DataFrame(data,
-                           columns=['protocol', 'bandwidth', 'delay', 'qmult', 'goodput_ratio_20_mean',
+                           columns=['protocol', 'bandwidth', 'delay', 'delay_ratio','qmult', 'goodput_ratio_20_mean',
                                     'goodput_ratio_20_std', 'goodput_ratio_total_mean', 'goodput_ratio_total_std'])
 
 orca_data = summary_data[summary_data['protocol'] == 'orca'].set_index('delay')
