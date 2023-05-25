@@ -50,16 +50,21 @@ for protocol in PROTOCOLS:
                  receiver1_total = receiver1_total.drop_duplicates('time')
                  receiver2_total = receiver2_total.drop_duplicates('time')
 
-                 if(len(receiver1_total['bandwidth']) != len(receiver2_total['bandwidth'])):
-                     print(receiver1_total['time'])
-                     print(receiver2_total['time'])
-
                  receiver1 = receiver1_total[receiver1_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
                  receiver2 = receiver2_total[receiver2_total['time'] >= end_time - keep_last_seconds].reset_index(drop=True)
 
-                 if(len(receiver1['bandwidth']) != len(receiver2['bandwidth'])):
-                     print(receiver1['time'])
-                     print(receiver2['time'])
+                 receiver1_total = receiver1_total.set_index('time')
+                 receiver2_total = receiver2_total.set_index('time')
+
+                 receiver1 = receiver1.set_index('time')
+                 receiver2 = receiver2.set_index('time')
+
+                 total = pd.concat([receiver1_total,receiver2_total], axis=1, join='outer', join_axes=None, ignore_index=False, keys=None, levels=None, names=None, verify_integrity=False)
+                 partial = pd.concat([receiver1,receiver2], axis=1, join='outer', join_axes=None, ignore_index=False, keys=None, levels=None, names=None, verify_integrity=False)
+
+                 print(total)
+                 print(partial)
+                 exit()
                  goodput_ratios_20.append(np.minimum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy())/np.maximum(receiver1['bandwidth'].to_numpy(),receiver2['bandwidth'].to_numpy()))
                  goodput_ratios_total.append(np.minimum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy())/np.maximum(receiver1_total['bandwidth'].to_numpy(),receiver2_total['bandwidth'].to_numpy()))
               else:
