@@ -87,7 +87,7 @@ if __name__ == '__main__':
     QMULT = 1
     RUNS = [1, 2, 3, 4, 5]
     SYNC = True
-
+    XLIM = [0,100]
     fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 4))
 
     for i, delay in enumerate(DELAYS):
@@ -103,7 +103,7 @@ if __name__ == '__main__':
             ax.fill_between(x, y - err, y + err, alpha=0.2)
             if i == 0:
                 ax.set(ylabel='Normalised Aggregate Goodput')
-            ax.set(ylim=[0, 1.25], xlim=[0, 125])
+            ax.set(ylim=[0, 1.25], xlim=XLIM)
             ax.set_title('%s ms' % (delay ))
             ax.legend()
             ax.grid()
@@ -118,7 +118,7 @@ if __name__ == '__main__':
             ax.fill_between(x, y - err, y + err, alpha=0.2)
             if i == 0:
                 ax.set(ylabel='Goodputs Ratio')
-            ax.set(xlabel='time (s)', xlim=[0, 125], yscale='log')
+            ax.set(xlabel='time (s)', xlim=XLIM, yscale='log')
             ax.legend()
             ax.grid()
 
@@ -144,7 +144,7 @@ if __name__ == '__main__':
             if i == 0:
                 ax.set(ylabel='Normalised Aggregate Goodput')
 
-            ax.set(ylim=[0, 1.25], xlim=[0, 125])
+            ax.set(ylim=[0, 1.25], xlim=XLIM)
             ax.set_title('%s ms' % delay )
             ax.legend()
             ax.grid()
@@ -159,7 +159,7 @@ if __name__ == '__main__':
             ax.fill_between(x, y - err, y + err, alpha=0.2)
             if i == 0:
                 ax.set(ylabel='Goodputs Ratio')
-            ax.set(xlabel='time (s)', xlim=[0, 125], yscale='log')
+            ax.set(xlabel='time (s)', xlim=XLIM, yscale='log')
             ax.legend()
             ax.grid()
 
