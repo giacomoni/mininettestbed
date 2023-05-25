@@ -7,7 +7,7 @@ import os
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
-ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2_correct/fifo"
+ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_correct/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BWS = [100]
 DELAYS = [20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -106,7 +106,7 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_2
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio', ylim=[0.009,1])
+ax.set(yscale='linear',xlabel='One way delay ratio', ylabel='Goodput Ratio', ylim=[0.009,1])
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
@@ -131,7 +131,7 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_t
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio',ylim=[0.009,1])
+ax.set(yscale='linear',xlabel='One way delay ratio', ylabel='Goodput Ratio',ylim=[0.009,1])
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
