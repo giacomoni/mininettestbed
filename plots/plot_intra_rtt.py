@@ -40,13 +40,14 @@ for protocol in PROTOCOLS:
                  receiver1_total = pd.read_csv(PATH + '/csvs/x1.csv').reset_index(drop=True)
                  receiver2_total = pd.read_csv(PATH + '/csvs/x2.csv').reset_index(drop=True)
 
+                 receiver1_total['time'] = receiver1_total['time'].apply(lambda x: int(float(x)))
+                 receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
+
 
                  receiver1_total = receiver1_total[(receiver1_total['time'] > start_time) & (receiver1_total['time'] <= end_time)]
                  receiver2_total = receiver2_total[(receiver2_total['time'] > start_time) & (receiver2_total['time'] <= end_time)]
 
 
-                 receiver1_total['time'] = receiver1_total['time'].apply(lambda x: int(float(x)))
-                 receiver2_total['time'] = receiver2_total['time'].apply(lambda x: int(float(x)))
 
                  if(len(receiver1_total['bandwidth']) != len(receiver2_total['bandwidth'])):
                      print(receiver1_total['time'])
