@@ -13,7 +13,7 @@ BW = 100
 DELAY = 100
 QMULT = 1
 RUNS = [1, 2, 3, 4, 5]
-BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
+BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * 10 * (10 ** -3) / 8)
 BDP_IN_PKTS = BDP_IN_BYTES / 1500
 
 fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(10, 6))
