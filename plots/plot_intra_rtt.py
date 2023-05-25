@@ -83,9 +83,9 @@ summary_data = pd.DataFrame(data,
                            columns=['protocol', 'bandwidth', 'delay', 'qmult', 'goodput_ratio_20_mean',
                                     'goodput_ratio_20_std', 'goodput_ratio_total_mean', 'goodput_ratio_total_std'])
 
-orca_data = summary_data[summary_data['protocol'] == 'orca']
-cubic_data = summary_data[summary_data['protocol'] == 'cubic']
-aurora_data = summary_data[summary_data['protocol'] == 'aurora']
+orca_data = summary_data[summary_data['protocol'] == 'orca'].set_index('delay')
+cubic_data = summary_data[summary_data['protocol'] == 'cubic'].set_index('delay')
+aurora_data = summary_data[summary_data['protocol'] == 'aurora'].set_index('delay')
 
 LINEWIDTH = 1
 
