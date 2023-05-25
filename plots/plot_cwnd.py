@@ -7,7 +7,7 @@ import os
 from matplotlib.ticker import ScalarFormatter
 
 # Plot congestion window, or sending rate
-ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async_2_correct/fifo"
+ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async_correct/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BW = 100
 DELAY = 100
