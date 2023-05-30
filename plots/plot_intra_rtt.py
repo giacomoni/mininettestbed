@@ -7,26 +7,25 @@ import os
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
-ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_correct/fifo"
+ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_0.2bdp/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BWS = [100]
-DELAYS = [20, 30, 40, 50, 60, 70, 80, 90, 100]
-QMULTS = [1]
+DELAYS = [5, 15, 25, 35, 45, 55, 65, 75, 80]
+QMULTS = [0.2]
 RUNS = [1, 2, 3, 4, 5]
 LOSSES=[0]
 
 data = []
 
 
-flow_duration = 100
 keep_last_seconds = 20
-start_time=25
-end_time=100
+start_time=50
+end_time=200
 for protocol in PROTOCOLS:
   for bw in BWS:
      for delay in DELAYS:
         for mult in QMULTS:
-           BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * 10 * (10 ** -3) / 8)
+           BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * 80 * (10 ** -3) / 8)
            BDP_IN_PKTS = BDP_IN_BYTES / 1500
 
            goodput_ratios_20 = []
@@ -82,9 +81,9 @@ summary_data = pd.DataFrame(data,
                            columns=['protocol', 'bandwidth', 'delay', 'delay_ratio','qmult', 'goodput_ratio_20_mean',
                                     'goodput_ratio_20_std', 'goodput_ratio_total_mean', 'goodput_ratio_total_std'])
 
-orca_data = summary_data[summary_data['protocol'] == 'orca'].set_index('delay_ratio')
-cubic_data = summary_data[summary_data['protocol'] == 'cubic'].set_index('delay_ratio')
-aurora_data = summary_data[summary_data['protocol'] == 'aurora'].set_index('delay_ratio')
+orca_data = summary_data[summary_data['protocol'] == 'orca'].set_index('delay')
+cubic_data = summary_data[summary_data['protocol'] == 'cubic'].set_index('delay')
+aurora_data = summary_data[summary_data['protocol'] == 'aurora'].set_index('delay')
 
 LINEWIDTH = 1
 ELINEWIDTH = 0.75
@@ -106,13 +105,13 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_2
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio', ylim=[0.009,1])
+ax.set(yscale='linear',xlabel='One way delay (ms)', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
 ax.grid()
 
-plt.savefig('goodput_ratio_20_log.png', dpi=720)
+plt.savefig('goodput_ratio_20.png', dpi=720)
 
 
 
@@ -131,10 +130,10 @@ markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_t
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='log',xlabel='One way delay ratio', ylabel='Goodput Ratio',ylim=[0.009,1])
+ax.set(yscale='linear',xlabel='One way delay (ms)', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
 ax.legend()
 ax.grid()
 
-plt.savefig('goodput_ratio_log.png', dpi=720)
+plt.savefig('goodput_ratio.png', dpi=720)

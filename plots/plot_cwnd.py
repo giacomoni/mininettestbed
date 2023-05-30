@@ -7,20 +7,21 @@ import os
 from matplotlib.ticker import ScalarFormatter
 
 # Plot congestion window, or sending rate
-ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async_correct/fifo"
-PROTOCOLS = ['cubic', 'orca', 'aurora']
+ROOT_PATH =  "/home/luca/mininettestbed/results_fairness_inter_rtt_async_0.2bdp_test/fifo"
+PROTOCOLS = ['cubic', 'orca']
 BW = 100
-DELAY = 100
-QMULT = 1
-RUNS = [1, 2, 3, 4, 5]
+DELAY = 80
+QMULT = 0.2
+RUNS = [1, 2]
+SCALE = 'linear'
 
-fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(10, 6))
+fig, axes = plt.subplots(nrows=len(RUNS), ncols=3, figsize=(10, 6))
 
 sending = {'cubic': [], 'orca': [], 'aurora': []}
 
 for protocol in PROTOCOLS:
 
-  BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * 10 * (10 ** -3) / 8)
+  BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * 80 * (10 ** -3) / 8)
   BDP_IN_PKTS = BDP_IN_BYTES / 1500
 
   for run in RUNS:
@@ -78,13 +79,13 @@ for i, protocol in enumerate(PROTOCOLS):
      ax.plot(x1, y1, linewidth=LINEWIDTH, alpha=0.75)
      ax.plot(x2, y2, linewidth=LINEWIDTH, alpha=0.75)
      if protocol != 'aurora':
-        ax.set(ylabel='cwnd (pkts)', ylim=[10,3000], yscale='log')
-        ax.axhline(y=2*BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
-        ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+        ax.set(ylabel='cwnd (pkts)', ylim=[0,3000], yscale=SCALE)
+      #   ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
+      #   ax.axhline(y=BDP_IN_PKTS, color='r', linestyle='--', alpha=0.5)
 
 
      else:
-        ax.set(ylabel='Send Rate (Mbps)', ylim=[0,200], yscale='linear')
+        ax.set(ylabel='Send Rate (Mbps)', ylim=[0,200], yscale=SCALE)
         ax.axhline(y=100, color='r', linestyle='--', alpha=0.5)
         ax.axhline(y=50, color='r', linestyle='--', alpha=0.5)
 
@@ -93,7 +94,7 @@ for i, protocol in enumerate(PROTOCOLS):
         ax.set(xlabel='time (s)')
      ax.set_title('%s - Run %s' % (protocol, run))
 
-     ax.set(xlim=[0,125])
+   #   ax.set(xlim=[0,1000])
 
      ax.grid()
 

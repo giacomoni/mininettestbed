@@ -13,8 +13,14 @@ class Emulation:
         # Lists used to run systats
         self.sending_nodes = []
         self.receiving_nodes = []
+        
+        flow_lengths = []
+        for config in self.traffic_config:
+            flow_lengths.append(config.start + config.duration)
+        
+        self.sysstat_length = max(flow_lengths)
 
-        # 
+    
         self.waitoutput = []
         self.call_first = []
         self.call_second = []
@@ -173,10 +179,10 @@ class Emulation:
             start_tcpprobe(self.path,"tcp_probe.txt")
 
         if self.sysstat:
-            start_sysstat(1,100,self.path) #TODO: change the count value to reflect the duration of the emulation
+            start_sysstat(1,self.sysstat_length,self.path) 
             # run sysstat on each sender to collect ETCP and UDP stats
             for node_name in self.sending_nodes:
-                start_sysstat(1,100,self.path, self.network.get(node_name))
+                start_sysstat(1,self.sysstat_length,self.path, self.network.get(node_name))
           
         for call in self.call_second:
             time.sleep(call.waiting_time)

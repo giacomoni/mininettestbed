@@ -6,14 +6,14 @@ plt.style.use('science')
 import os
 from matplotlib.ticker import ScalarFormatter
 
-ROOT_PATH = "/home/luca/mininettestbed/results_big_backup/results_fairness_async/fifo"
-PROTOCOLS = ['cubic', 'orca', 'aurora']
+ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_0.2bdp/fifo"
+PROTOCOLS = ['orca']
 BW = 100
-RUNS = [1, 2, 3, 4, 5]
+RUNS = [1,2,3,4]
 
-for FLOWS in [3,4]:
-   for DELAY in [10,100]:
-      for QMULTS in [0.1, 1]:
+for FLOWS in [2]:
+   for DELAY in [80]:
+      for QMULTS in [0.2]:
 
          data = {'cubic':
                     {1: pd.DataFrame([], columns=['time','mean', 'std']),
@@ -33,10 +33,10 @@ for FLOWS in [3,4]:
                  }
 
          start_time = 0
-         end_time = 100
+         end_time = 600
          # Plot throughput over time
          for protocol in PROTOCOLS:
-            BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * DELAY * (10 ** -3) / 8)
+            BDP_IN_BYTES = int(BW * (2 ** 20) * 2 * 80 * (10 ** -3) / 8)
             BDP_IN_PKTS = BDP_IN_BYTES / 1500
             senders = {1: [], 2: [], 3: [], 4:[]}
             receivers = {1: [], 2: [], 3: [], 4:[]}
@@ -46,6 +46,8 @@ for FLOWS in [3,4]:
                   if os.path.exists(PATH + '/csvs/c%s.csv' % (n+1)):
                      sender = pd.read_csv(PATH +  '/csvs/c%s.csv' % (n+1))
                      senders[n+1].append(sender)
+                  else:
+                     print("Folder not found")
 
                   if os.path.exists(PATH + '/csvs/x%s.csv' % (n+1)):
                      receiver_total = pd.read_csv(PATH + '/csvs/x%s.csv' % (n+1)).reset_index(drop=True)
@@ -57,6 +59,8 @@ for FLOWS in [3,4]:
                      receiver_total = receiver_total.drop_duplicates('time')
                      receiver_total = receiver_total.set_index('time')
                      receivers[n+1].append(receiver_total)
+                  else:
+                     print("Folder not found")
 
             # For each flow, receivers contains a list of dataframes with a time and bandwidth column. These dataframes SHOULD have
             # exactly the same index. Now I can concatenate and compute mean and std

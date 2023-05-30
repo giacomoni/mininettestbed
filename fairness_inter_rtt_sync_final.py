@@ -16,11 +16,11 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
         print("ERROR: topology \'%s\' not recognised" % topology)
 
     bdp_in_bytes = int(bw * (2 ** 20) * 2 * delay * (10 ** -3) / 8)
-    fixed_bdp_in_bytes = int(bw * (2 ** 20) * 2 * 80 * (10 ** -3) / 8)
+    fixed_bdp_in_bytes = int(bw * (2 ** 20) * 2 * delay * (10 ** -3) / 8)
     qsize_in_bytes = max(int(qmult * fixed_bdp_in_bytes), 1500)
     
     net = Mininet(topo=topo)
-    path = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_0.2bdp/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
+    path = "/home/luca/mininettestbed/results_fairness_inter_rtt_sync_final/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
     mkdirp(path)
 
 
@@ -33,8 +33,8 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
 
     net.start()
 
-    network_config = [NetworkConf('c1', 's1', None, 2*delay, 3*bdp_in_bytes, False, 'fifo', loss),
-                      NetworkConf('c2', 's1', None, 2*80, 3*bdp_in_bytes, False, 'fifo', loss),
+    network_config = [NetworkConf('c1', 's1', None, 2*100, 3*bdp_in_bytes, False, 'fifo', loss),
+                      NetworkConf('c2', 's1', None, 2*delay, 3*bdp_in_bytes, False, 'fifo', loss),
                       NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False, aqm, None)]
     
     if n_flows == 1:
@@ -43,8 +43,8 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
                         #   TrafficConf('c3', 'x3', 50, 50, protocol),
                         #   TrafficConf('c4', 'x4', 75, 25, protocol)]
     elif n_flows == 2:
-        traffic_config = [TrafficConf('c1', 'x1', 0, 200, protocol),
-                           TrafficConf('c2', 'x2', 50, 200, protocol)]
+        traffic_config = [TrafficConf('c1', 'x1', 0, 600, protocol),
+                           TrafficConf('c2', 'x2', 0, 600, protocol)]
     elif n_flows == 3:
         traffic_config = [TrafficConf('c1', 'x1', 0, 100, protocol),
                          TrafficConf('c2', 'x2', 25, 125, protocol),
