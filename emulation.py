@@ -256,13 +256,13 @@ class Emulation:
     def start_aurora_client(self, node_name, destination_name, duration, model_path, port=9000, perf_interval=1):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        orcacmd = 'sudo -u luca LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/luca/PCC-Uspace/src/core /home/luca/PCC-Uspace/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=/home/luca/PCC-RL/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s | tee %s.txt' % (destination.IP(), port, perf_interval, duration, model_path, node_name)
+        orcacmd = 'sudo -u luca LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/luca/PCC-Uspace/src/core /home/luca/PCC-Uspace/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=/home/luca/PCC-RL/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (destination.IP(), port, perf_interval, duration, model_path, node_name)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 
     def start_aurora_server(self, node_name, duration, port=9000, perf_interval=1):
         node = self.network.get(node_name)
-        orcacmd = 'sudo -u luca LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/luca/PCC-Uspace/src/core /home/luca/PCC-Uspace/src/app/pccserver recv %s %s %s | tee %s.txt' % (port, perf_interval, duration, node_name)
+        orcacmd = 'sudo -u luca LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/luca/PCC-Uspace/src/core /home/luca/PCC-Uspace/src/app/pccserver recv %s %s %s' % (port, perf_interval, duration, node_name)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 

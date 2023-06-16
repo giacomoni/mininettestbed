@@ -49,4 +49,21 @@ def tcp_buffers_setup(target_bdp_bytes, multiplier=3):
         os.system('sysctl -w net.ipv4.tcp_rmem=\'10240 87380 %s\'' % (multiplier*(target_bdp_bytes)))
         os.system('sysctl -w net.ipv4.tcp_wmem=\'10240 87380 %s\'' % (multiplier*(target_bdp_bytes)))
 
+def disable_offload(net):
+    for node_name, node in net.items():
+        for intf_name in node.intfNames():
+            if 'c' in  intf_name or 'x' in intf_name:
+                node.cmd('sudo ethtool -K %s tso off' % intf_name)
+                node.cmd('sudo ethtool -K %s gro off' % intf_name)
+                node.cmd('sudo ethtool -K %s gso off' % intf_name)
+                node.cmd('sudo ethtool -K %s lro off' % intf_name)
+                node.cmd('sudo ethtool -K %s ufo off' % intf_name)
+            if 's' in intf_name:
+                os.system('sudo ethtool -K %s tso off' % intf_name)
+                os.system('sudo ethtool -K %s gro off' % intf_name)
+                os.system('sudo ethtool -K %s gso off' % intf_name)
+                os.system('sudo ethtool -K %s lro off' % intf_name)
+                os.system('sudo ethtool -K %s ufo off' % intf_name)
+
+
 

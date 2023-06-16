@@ -25,7 +25,7 @@ def monitor_qlen(iface, interval_sec = 1, path = default_dir):
         matches_queued = pat_queued.findall(output)
         matches_dropped = pat_dropped.findall(output)
         if len(matches_queued) != len(matches_dropped):
-            print("WARNING: Two mathces have different lengths!")
+            print("WARNING: Two matches have different lengths!")
             print(output)
         if matches_queued and matches_dropped:
             tmp += '%f,%s,%s' % (time(), matches_queued[0],matches_dropped[0])
@@ -110,6 +110,8 @@ def stop_sysstat(folder, sending_nodes):
     Popen(cmd, shell=True).wait()
     cmd = "sadf -d -U -- -n EDEV %s/sysstat/datafile_root.log > %s/sysstat/edev_root.log" % (folder,folder)
     Popen(cmd, shell=True).wait()
+    cmd = "sadf -d -U -- -P ALL %s/sysstat/datafile_root.log > %s/sysstat/cpu_root.log" % (folder,folder)
+    Popen(cmd, shell=True).wait()
     for node_name in sending_nodes:
         # Run sadf to generate CSV like (semi-colon separated) file
         cmd = "sadf -d -U -- -n DEV %s/sysstat/datafile_%s.log > %s/sysstat/dev_%s.log" % (folder,node_name,folder, node_name)
@@ -119,6 +121,8 @@ def stop_sysstat(folder, sending_nodes):
         cmd = "sadf -d -U -- -n ETCP %s/sysstat/datafile_%s.log > %s/sysstat/etcp_%s.log" % (folder,node_name,folder, node_name)
         Popen(cmd, shell=True).wait()
         cmd = "sadf -d -U -- -n UDP %s/sysstat/datafile_%s.log > %s/sysstat/udp_%s.log" % (folder,node_name,folder, node_name)
+        Popen(cmd, shell=True).wait()
+        cmd = "sadf -d -U -- -P ALL %s/sysstat/datafile_%s.log > %s/sysstat/cpu_%s.log" % (folder,node_name,folder, node_name)
         Popen(cmd, shell=True).wait()
 
     return
