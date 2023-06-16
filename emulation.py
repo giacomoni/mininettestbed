@@ -1,6 +1,7 @@
 from utils import *
 from monitor import *
 from multiprocessing import Process
+from config import *
 import time
 import json
 
@@ -159,7 +160,7 @@ class Emulation:
                 self.call_first.append(Command(command, params, None))
 
                 # Create client start up call
-                params = (source_node,destination,duration,"/home/luca/pcc_saved_models/icml_paper_model")
+                params = (source_node,destination,duration,"%s/pcc_saved_models/icml_paper_model" % HOME_DIR)
                 command = self.start_aurora_client
                 self.call_second.append(Command(command, params, start_time - previous_start_time))
             else:
@@ -241,7 +242,7 @@ class Emulation:
 
     def start_orca_sender(self,node_name, duration, port=4444):
         node = self.network.get(node_name)
-        orcacmd = 'sudo -u luca /home/luca/Orca/sender.sh %s %s %s' % (port,  self.orca_flows_counter, duration)
+        orcacmd = 'sudo -u %s %s/sender.sh %s %s %s' % (USERNAME, ORCA_INSTALL_FOLDER, port,  self.orca_flows_counter, duration)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
         self.orca_flows_counter+= 1 
@@ -249,20 +250,20 @@ class Emulation:
     def start_orca_receiver(self, node_name, destination_name, port=4444):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        orcacmd = 'sudo -u luca /home/luca/Orca/receiver.sh %s %s %s' % (destination.IP(), port, 0)
+        orcacmd = 'sudo -u %s %s/Orca/receiver.sh %s %s %s' % (USERNAME,ORCA_INSTALL_FOLDER,destination.IP(), port, 0)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 
     def start_aurora_client(self, node_name, destination_name, duration, model_path, port=9000, perf_interval=1):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        orcacmd = 'sudo -u luca LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/luca/PCC-Uspace/src/core /home/luca/PCC-Uspace/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=/home/luca/PCC-RL/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (destination.IP(), port, perf_interval, duration, model_path, node_name)
+        orcacmd = 'sudo -u %s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=%s/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (USERNAME,PCC_USPACE_INSTALL_FOLDER,PCC_USPACE_INSTALL_FOLDER,PCC_RL_INSTALL_FOLDER,destination.IP(), port, perf_interval, duration, model_path, node_name)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 
     def start_aurora_server(self, node_name, duration, port=9000, perf_interval=1):
         node = self.network.get(node_name)
-        orcacmd = 'sudo -u luca LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/luca/PCC-Uspace/src/core /home/luca/PCC-Uspace/src/app/pccserver recv %s %s %s' % (port, perf_interval, duration, node_name)
+        orcacmd = 'sudo -u %s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccserver recv %s %s %s' % (USERNAME,PCC_USPACE_INSTALL_FOLDER,PCC_USPACE_INSTALL_FOLDER,port, perf_interval, duration, node_name)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 
