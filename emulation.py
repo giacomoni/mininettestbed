@@ -1,20 +1,27 @@
 from utils import *
 from monitor import *
 from multiprocessing import Process
+from config import *
 import time
 import json
-
-
-
-
 
 class Emulation:
     def __init__(self, network, network_config = None, traffic_config = None, path='.'):
         self.network = network
         self.network_config = network_config
         self.traffic_config = traffic_config
-       
         
+        # Lists used to run systats
+        self.sending_nodes = []
+        self.receiving_nodes = []
+        
+        flow_lengths = []
+        for config in self.traffic_config:
+            flow_lengths.append(config.start + config.duration)
+        
+        self.sysstat_length = max(flow_lengths)
+
+    
         self.waitoutput = []
         self.call_first = []
         self.call_second = []
@@ -39,9 +46,9 @@ class Emulation:
         for config in self.network_config:
             links = self.network.linksBetween(self.network.get(config.node1), self.network.get(config.node2))
             for link in links:
-                self.configure_link(link, config.bw, config.delay, config.qsize, config.bidir, aqm=config.aqm)
+                self.configure_link(link, config.bw, config.delay, config.qsize, config.bidir, aqm=config.aqm, loss=config.loss)
     
-    def configure_link(self, link, bw, delay, qsize, bidir, aqm='fifo'):
+    def configure_link(self, link, bw, delay, qsize, bidir, aqm='fifo', loss=None):
         interfaces = [link.intf1, link.intf2]
         if bidir:
             n = 2
@@ -52,7 +59,10 @@ class Emulation:
             node = interfaces[i].node
             
             if delay and not bw:
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s ' % (intf_name, delay,  int(qsize/1500))
+                print("loss is %s" % loss)
+                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s' % (intf_name, delay,  100000)
+                if (loss is not None) and (float(loss) > 0):
+                    cmd += " loss %s%%" % (loss)
                 if aqm == 'fq_codel':
                     cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: fq_codel limit 17476 target 5ms interval 100ms flows 100" % (intf_name)
                 elif aqm == 'codel':
@@ -72,7 +82,7 @@ class Emulation:
 
             elif delay and bw:
                 burst = int(10*bw*(2**20)/250/8)
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc add dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s ' % (intf_name, delay,    int(qsize/1500), intf_name, bw, burst, qsize)
+                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc add dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s ' % (intf_name, delay,    100000, intf_name, bw, burst, qsize)
                 if aqm == 'fq_codel':
                     cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: fq_codel limit %s target 5ms interval 100ms flows 100" % (intf_name,     int(qsize/1500))
                 elif aqm == 'codel':
@@ -120,6 +130,9 @@ class Emulation:
             self.waitoutput.append(source_node)
             self.waitoutput.append(destination)
 
+            self.sending_nodes.append(source_node)
+            self.receiving_nodes.append(destination)
+
             if protocol == 'orca':
                 params = (source_node,duration)
                 command = self.start_orca_sender
@@ -148,6 +161,7 @@ class Emulation:
 
                 # Create client start up call
                 params = (source_node,destination,duration,"/its/home/lg317/pcc_saved_models/model_B")
+                params = (source_node,destination,duration,"%s/pcc_saved_models/icml_paper_model" % HOME_DIR)
                 command = self.start_aurora_client
                 self.call_second.append(Command(command, params, start_time - previous_start_time))
             else:
@@ -166,6 +180,12 @@ class Emulation:
         if self.tcp_probe:
             start_tcpprobe(self.path,"tcp_probe.txt")
 
+        if self.sysstat:
+            start_sysstat(1,self.sysstat_length,self.path) 
+            # run sysstat on each sender to collect ETCP and UDP stats
+            for node_name in self.sending_nodes:
+                start_sysstat(1,self.sysstat_length,self.path, self.network.get(node_name))
+          
         for call in self.call_second:
             time.sleep(call.waiting_time)
             call.command(*call.params)
@@ -185,11 +205,18 @@ class Emulation:
         if self.tcp_probe:
             stop_tcpprobe()
 
+        if self.sysstat:
+            stop_sysstat(self.path, self.sending_nodes)
+
 
     def set_monitors(self, monitors, interval_sec=1):
         if "tcp_probe" in monitors:
             self.tcp_probe = True
             monitors.remove("tcp_probe")
+
+        if "sysstat" in monitors:
+            self.sysstat = True
+            monitors.remove("sysstat")
 
         for monitor in monitors:
             node, interface = monitor.split('-')
@@ -216,7 +243,7 @@ class Emulation:
 
     def start_orca_sender(self,node_name, duration, port=4444):
         node = self.network.get(node_name)
-        orcacmd = 'sudo -u lg317 /its/home/lg317/Orca/sender.sh %s %s %s' % (port,  self.orca_flows_counter, duration)
+        orcacmd = 'sudo -u %s %s/sender.sh %s %s %s' % (USERNAME, ORCA_INSTALL_FOLDER, port,  self.orca_flows_counter, duration)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
         self.orca_flows_counter+= 1 
@@ -224,20 +251,20 @@ class Emulation:
     def start_orca_receiver(self, node_name, destination_name, port=4444):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        orcacmd = 'sudo -u lg317 /its/home/lg317/Orca/receiver.sh %s %s %s' % (destination.IP(), port, 0)
+        orcacmd = 'sudo -u %s %s/Orca/receiver.sh %s %s %s' % (USERNAME,ORCA_INSTALL_FOLDER,destination.IP(), port, 0)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 
     def start_aurora_client(self, node_name, destination_name, duration, model_path, port=9000, perf_interval=1):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        orcacmd = 'sudo -u lg317 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/its/home/lg317/PCC-Uspace/src/core /its/home/lg317/PCC-Uspace/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=/its/home/lg317/PCC-RL/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s | tee %s.txt' % (destination.IP(), port, perf_interval, duration, model_path, node_name)
+        orcacmd = 'sudo -u %s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=%s/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (USERNAME,PCC_USPACE_INSTALL_FOLDER,PCC_USPACE_INSTALL_FOLDER,PCC_RL_INSTALL_FOLDER,destination.IP(), port, perf_interval, duration, model_path, node_name)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 
     def start_aurora_server(self, node_name, duration, port=9000, perf_interval=1):
         node = self.network.get(node_name)
-        orcacmd = 'sudo -u lg317 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/its/home/lg317/PCC-Uspace/src/core /its/home/lg317/PCC-Uspace/src/app/pccserver recv %s %s %s | tee %s.txt' % (port, perf_interval, duration, node_name)
+        orcacmd = 'sudo -u %s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccserver recv %s %s %s' % (USERNAME,PCC_USPACE_INSTALL_FOLDER,PCC_USPACE_INSTALL_FOLDER,port, perf_interval, duration, node_name)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 

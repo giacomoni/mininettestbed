@@ -1,75 +1,63 @@
 #!/bin/bash
 
+# Run two competing flows in a Dumbel topology with 100Mbps and varying RTT. Repeat the experiment for three different buffer sizes. 
+# The two flows should co-exist long enough to allow cubic to converge. We let the coexist for 1000x RTTs. The first flow lives for 500 RTTs, second flow enters
+#  and coexist with first flow for 1000 RTTs
 
+PROTOCOLS="cubic"
+BANDWIDTHS="100"
+DELAYS="10 20 30 40 50 60 70 80 90 100"
+RUNS="1 2 3 4 5"
+QMULTS="0.2 1 4"
+FLOWS="2"
 
-# sudo python experiment.py 10 10 1 cubic 1
-# sudo python experiment.py 10 10 1 orca 1
-# sudo python experiment.py 100 10 1 orca 1
-# sudo python experiment.py 100 10 1 cubic 1   
-
-# sudo python experiment.py 10 10 2 orca 1
-# sudo python experiment.py 10 10 2 cubic 1
-# sudo python experiment.py 100 10 2 orca 1
-# sudo python experiment.py 100 10 2 cubic 1
-
-# sudo python experiment.py 10 10 3 orca 1
-# sudo python experiment.py 10 10 3 cubic 1
-# sudo python experiment.py 100 10 3 orca 1
-# sudo python experiment.py 100 10 3 cubic 1
-
-# sudo python experiment.py 10 10 4 orca 1
-# sudo python experiment.py 10 10 4 cubic 1
-# sudo python experiment.py 100 10 4 orca 1
-# sudo python experiment.py 100 10 4 cubic 1
-
-# sudo python experiment.py 10 10 5 orca 1
-# sudo python experiment.py 10 10 5 cubic 1
-# sudo python experiment.py 100 10 5 orca 1
-# sudo python experiment.py 100 10 5 cubic 1
-
-
-# sudo python experiment.py 10 10 1 orca 2
-# sudo python experiment.py 10 10 1 cubic 2
-# sudo python experiment.py 100 10 1 orca 2
-# sudo python experiment.py 100 10 1 cubic 2
-
-# sudo python experiment.py 10 10 2 orca 2
-# sudo python experiment.py 10 10 2 cubic 2
-# sudo python experiment.py 100 10 2 orca 2
-# sudo python experiment.py 100 10 2 cubic 2
-
-# sudo python experiment.py 10 10 3 orca 2
-# sudo python experiment.py 10 10 3 cubic 2
-# sudo python experiment.py 100 10 3 orca 2
-# sudo python experiment.py 100 10 3 cubic 2
-
-# sudo python experiment.py 10 10 4 orca 2
-# sudo python experiment.py 10 10 4 cubic 2
-# sudo python experiment.py 100 10 4 orca 2
-# sudo python experiment.py 100 10 4 cubic 2
-
-# sudo python experiment.py 10 10 5 orca 2
-# sudo python experiment.py 10 10 5 cubic 2
-# sudo python experiment.py 100 10 5 orca 2
-# sudo python experiment.py 100 10 5 cubic 2
-
-
-PROTOCOLS="aurora"
-AQMS="fifo fq codel fq_codel"
-RUNS="1 2 3"
-
-for aqm in $AQMS
+for bw in $BANDWIDTHS
+do
+for del in $DELAYS
+do
+for qmult in $QMULTS
+do
+for flow in $FLOWS
 do
     for protocol in $PROTOCOLS
     do
         for run in $RUNS
         do
-            sudo python experiment.py 10 50 1 $protocol $run $aqm
-            sudo python experiment.py 100 50 1 $protocol $run $aqm
-            sudo python experiment.py 10 50 2 $protocol  $run $aqm
-            sudo python experiment.py 100 50 2 $protocol $run $aqm
+            sudo python fairness_intra_rtt_async.py $del $bw $qmult $protocol $run fifo 0 $flow
         done
     done
-done
+    done
+    done
+    done
+    done
+
+#  We repeat the experiment but with a bottleneck bandwidth of 10Mbps
+PROTOCOLS="cubic"
+BANDWIDTHS="10"
+DELAYS="10 20 30 40 50 60 70 80 90 100"
+RUNS="1 2 3 4 5"
+QMULTS="0.2 1 4"
+FLOWS="2"
+
+for bw in $BANDWIDTHS
+do
+for del in $DELAYS
+do
+for qmult in $QMULTS
+do
+for flow in $FLOWS
+do
+    for protocol in $PROTOCOLS
+    do
+        for run in $RUNS
+        do
+            sudo python fairness_intra_rtt_async.py $del $bw $qmult $protocol $run fifo 0 $flow
+        done
+    done
+    done
+    done
+    done
+    done
 
 
+    
