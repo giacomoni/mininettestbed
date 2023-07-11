@@ -6,3 +6,5 @@ rl_logging
 plots/*.png
 results*
 .idea
+nooffload
+parkinglottest

@@ -21,7 +21,7 @@ def run_emulation(topology, protocol, params, bw, delay, qmult, tcp_buffer_mult=
     net = Mininet(topo=topo)
 
 
-    path = "/home/luca/mininettestbed/results_fairness_bw_async/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
+    path = "/home/luca/mininettestbed/nooffload/results_fairness_bw_async/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
     mkdirp(path)
 
     #  Configure size of TCP buffers
@@ -31,6 +31,8 @@ def run_emulation(topology, protocol, params, bw, delay, qmult, tcp_buffer_mult=
     
 
     net.start()
+
+    disable_offload(net)
 
     network_config = [NetworkConf('s1', 's2', None, 2*delay, 3*bdp_in_bytes, False, 'fifo', loss),
                       NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False, aqm, None)]

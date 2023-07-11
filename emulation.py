@@ -242,7 +242,7 @@ class Emulation:
 
     def start_orca_sender(self,node_name, duration, port=4444):
         node = self.network.get(node_name)
-        orcacmd = 'sudo -u %s %s/sender.sh %s %s %s' % (USERNAME, ORCA_INSTALL_FOLDER, port,  self.orca_flows_counter, duration)
+        orcacmd = 'sudo -u %s  EXPERIMENT_PATH=%s %s/sender.sh %s %s %s' % (USERNAME, self.path, ORCA_INSTALL_FOLDER, port,  self.orca_flows_counter, duration)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
         self.orca_flows_counter+= 1 
@@ -250,22 +250,22 @@ class Emulation:
     def start_orca_receiver(self, node_name, destination_name, port=4444):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        orcacmd = 'sudo -u %s %s/Orca/receiver.sh %s %s %s' % (USERNAME,ORCA_INSTALL_FOLDER,destination.IP(), port, 0)
+        orcacmd = 'sudo -u %s %s/receiver.sh %s %s %s' % (USERNAME,ORCA_INSTALL_FOLDER,destination.IP(), port, 0)
         print("Sending command '%s' to host %s" % (orcacmd, node.name))
         node.sendCmd(orcacmd)
 
     def start_aurora_client(self, node_name, destination_name, duration, model_path, port=9000, perf_interval=1):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        orcacmd = 'sudo -u %s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=%s/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (USERNAME,PCC_USPACE_INSTALL_FOLDER,PCC_USPACE_INSTALL_FOLDER,PCC_RL_INSTALL_FOLDER,destination.IP(), port, perf_interval, duration, model_path, node_name)
-        print("Sending command '%s' to host %s" % (orcacmd, node.name))
-        node.sendCmd(orcacmd)
+        auroracmd = 'sudo -u %s EXPERIMENT_PATH=%s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=%s/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (USERNAME, self.path, PCC_USPACE_INSTALL_FOLDER, PCC_USPACE_INSTALL_FOLDER, destination.IP(), port, perf_interval, duration, PCC_RL_INSTALL_FOLDER, model_path)
+        print("Sending command '%s' to host %s" % (auroracmd, node.name))
+        node.sendCmd(auroracmd)
 
     def start_aurora_server(self, node_name, duration, port=9000, perf_interval=1):
         node = self.network.get(node_name)
-        orcacmd = 'sudo -u %s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccserver recv %s %s %s' % (USERNAME,PCC_USPACE_INSTALL_FOLDER,PCC_USPACE_INSTALL_FOLDER,port, perf_interval, duration, node_name)
-        print("Sending command '%s' to host %s" % (orcacmd, node.name))
-        node.sendCmd(orcacmd)
+        auroracmd = 'sudo -u %s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccserver recv %s %s %s' % (USERNAME,PCC_USPACE_INSTALL_FOLDER,PCC_USPACE_INSTALL_FOLDER,port, perf_interval, duration)
+        print("Sending command '%s' to host %s" % (auroracmd, node.name))
+        node.sendCmd(auroracmd)
 
 
     def dump_info(self):

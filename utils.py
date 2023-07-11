@@ -10,10 +10,11 @@ default_dir = '.'
 
 def mkdirp( path ):
     try:
-        os.makedirs( path )
+        os.makedirs( path,0o777 )
     except OSError:
         if not os.path.isdir( path ):
             raise
+
 
 def convert_to_mega_units(string):
     value, units = string.split(" ")
