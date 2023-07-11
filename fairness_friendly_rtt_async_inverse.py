@@ -25,7 +25,6 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
     path = "/home/luca/mininettestbed/nooffload/results_friendly_intra_rtt_async_inverse/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
     mkdirp(path)
     subprocess.call(['chown', '-R' ,'luca', path])
-    # os.environ['EXPERIMENT_PATH'] = path
 
 
 
