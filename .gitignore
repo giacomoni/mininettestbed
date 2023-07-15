@@ -8,3 +8,6 @@ results*
 .idea
 nooffload
 parkinglottest
+plots/*
+aurora_analysis/*
+tcp_tracing/*

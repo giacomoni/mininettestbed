@@ -7,25 +7,24 @@ import os
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
-ROOT_PATH = "/home/luca/mininettestbed/results_fairness_inter_rtt_async_0.2bdp/fifo"
+ROOT_PATH = "/Volumes/LaCie/mininettestbed/nooffload/results_fairness_intra_rtt_async/fifo"
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BWS = [100]
-DELAYS = [5, 15, 25, 35, 45, 55, 65, 75, 80]
-QMULTS = [0.2]
+DELAYS = [10, 20, 30, 40, 50, 60, 70, 80, 100]
+QMULTS = [4]
 RUNS = [1, 2, 3, 4, 5]
 LOSSES=[0]
 
 data = []
-
-
-keep_last_seconds = 20
-start_time=50
-end_time=200
 for protocol in PROTOCOLS:
   for bw in BWS:
      for delay in DELAYS:
+        duration = 2*delay
+        start_time = 2*delay
+        end_time = 3*delay
+        keep_last_seconds = int(0.25*delay)
         for mult in QMULTS:
-           BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * 80 * (10 ** -3) / 8)
+           BDP_IN_BYTES = int(bw * (2 ** 20) * 2 * delay * (10 ** -3) / 8)
            BDP_IN_PKTS = BDP_IN_BYTES / 1500
 
            goodput_ratios_20 = []
@@ -59,8 +58,8 @@ for protocol in PROTOCOLS:
                  total = receiver1_total.join(receiver2_total, how='inner', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
                  partial = receiver1.join(receiver2, how='inner', lsuffix='1', rsuffix='2')[['bandwidth1', 'bandwidth2']]
 
-                 total = total.dropna()
-                 partial = partial.dropna()
+                 # total = total.dropna()
+                 # partial = partial.dropna()
 
                  goodput_ratios_20.append(partial.min(axis=1)/partial.max(axis=1))
                  goodput_ratios_total.append(total.min(axis=1)/total.max(axis=1))
@@ -69,13 +68,15 @@ for protocol in PROTOCOLS:
                  std_goodput = None
                  jain_goodput_20 = None
                  jain_goodput_total = None
-                 print("Folder not found.")
+                 print("Folder %s not found." % PATH)
 
-           goodput_ratios_20 = np.concatenate(goodput_ratios_20, axis=0)
-           goodput_ratios_total = np.concatenate(goodput_ratios_total, axis=0)
+           if len(goodput_ratios_20) > 0 and len(goodput_ratios_total) > 0:
+              goodput_ratios_20 = np.concatenate(goodput_ratios_20, axis=0)
+              goodput_ratios_total = np.concatenate(goodput_ratios_total, axis=0)
 
-           data_entry = [protocol, bw, delay, delay/10, mult, goodput_ratios_20.mean(), goodput_ratios_20.std(), goodput_ratios_total.mean(), goodput_ratios_total.std()]
-           data.append(data_entry)
+              if len(goodput_ratios_20) > 0 and len(goodput_ratios_total) > 0:
+                 data_entry = [protocol, bw, delay, delay/10, mult, goodput_ratios_20.mean(), goodput_ratios_20.std(), goodput_ratios_total.mean(), goodput_ratios_total.std()]
+                 data.append(data_entry)
 
 summary_data = pd.DataFrame(data,
                            columns=['protocol', 'bandwidth', 'delay', 'delay_ratio','qmult', 'goodput_ratio_20_mean',
@@ -90,50 +91,50 @@ ELINEWIDTH = 0.75
 CAPTHICK = ELINEWIDTH
 CAPSIZE= 2
 
-fig, axes = plt.subplots(nrows=1, ncols=1)
+fig, axes = plt.subplots(nrows=1, ncols=1,figsize=(3,1.5))
 ax = axes
 
 
 
-markers, caps, bars = ax.errorbar(cubic_data.index, cubic_data['goodput_ratio_20_mean'], yerr=cubic_data['goodput_ratio_20_std'],marker='x',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK, label='cubic')
+markers, caps, bars = ax.errorbar(cubic_data.index*2, cubic_data['goodput_ratio_20_mean'], yerr=cubic_data['goodput_ratio_20_std'],marker='x',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK, label='cubic')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_20_mean'], yerr=orca_data['goodput_ratio_20_std'],marker='^',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='orca', linestyle='--')
+markers, caps, bars = ax.errorbar(orca_data.index*2,orca_data['goodput_ratio_20_mean'], yerr=orca_data['goodput_ratio_20_std'],marker='^',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='orca', linestyle='--')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_20_mean'], yerr=aurora_data['goodput_ratio_20_std'],marker='+',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='aurora', linestyle='-.')
+markers, caps, bars = ax.errorbar(aurora_data.index*2,aurora_data['goodput_ratio_20_mean'], yerr=aurora_data['goodput_ratio_20_std'],marker='+',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='aurora', linestyle='-.')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='linear',xlabel='One way delay (ms)', ylabel='Goodput Ratio')
+ax.set(yscale='linear',xlabel='RTT (ms)', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
-ax.legend()
-ax.grid()
+ax.legend(loc=4,prop={'size': 6})
+# ax.grid()
 
-plt.savefig('goodput_ratio_20.png', dpi=720)
+plt.savefig('goodput_ratio_async_intra_20_%s.png' % mult, dpi=720)
 
 
 
-fig, axes = plt.subplots(nrows=1, ncols=1)
+fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(3,1.5))
 ax = axes
 
 
 
-markers, caps, bars = ax.errorbar(cubic_data.index,cubic_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='x',elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,linewidth=LINEWIDTH, label='cubic')
+markers, caps, bars = ax.errorbar(cubic_data.index*2,cubic_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='x',elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,linewidth=LINEWIDTH, label='cubic')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(orca_data.index,orca_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='^',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='orca', linestyle='--')
+markers, caps, bars = ax.errorbar(orca_data.index*2,orca_data['goodput_ratio_total_mean'], yerr=cubic_data['goodput_ratio_total_std'],marker='^',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='orca', linestyle='--')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
-markers, caps, bars = ax.errorbar(aurora_data.index,aurora_data['goodput_ratio_total_mean'], yerr=aurora_data['goodput_ratio_total_std'],marker='+',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='aurora', linestyle='-.')
+markers, caps, bars = ax.errorbar(aurora_data.index*2,aurora_data['goodput_ratio_total_mean'], yerr=aurora_data['goodput_ratio_total_std'],marker='+',linewidth=LINEWIDTH, elinewidth=ELINEWIDTH, capsize=CAPSIZE, capthick=CAPTHICK,label='aurora', linestyle='-.')
 [bar.set_alpha(0.5) for bar in bars]
 [cap.set_alpha(0.5) for cap in caps]
 
-ax.set(yscale='linear',xlabel='One way delay (ms)', ylabel='Goodput Ratio')
+ax.set(yscale='linear',xlabel='RTT (ms)', ylabel='Goodput Ratio')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ScalarFormatter())
-ax.legend()
-ax.grid()
+ax.legend(loc=4, prop={'size': 6})
+# ax.grid()
 
-plt.savefig('goodput_ratio.png', dpi=720)
+plt.savefig('goodput_ratio_async_intra_%s.png' % mult, dpi=720)
