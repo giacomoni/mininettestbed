@@ -22,7 +22,7 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
     duration = int((2*delay*1000)/1000)
     
     net = Mininet(topo=topo)
-    path = "/its/home/lg317/nooffload/results_fairness_inter_rtt_async/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
+    path = "/home/luca/nooffload/results_fairness_inter_rtt_async/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
     mkdirp(path)
 
 

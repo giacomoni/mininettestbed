@@ -21,7 +21,7 @@ def run_emulation(topology, protocol, params, bw, delay, qmult, tcp_buffer_mult=
     net = Mininet(topo=topo)
 
 
-    path = "/its/home/lg317/mininettestbed/nooffload/results_friendly_bw_async/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
+    path = "/home/luca/mininettestbed/nooffload/results_friendly_bw_async/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
     mkdirp(path)
 
     #  Configure size of TCP buffers
@@ -61,8 +61,8 @@ def run_emulation(topology, protocol, params, bw, delay, qmult, tcp_buffer_mult=
     em.configure_network()
     em.configure_traffic()
     monitors = ['s1-eth1', 's2-eth2', 'sysstat']
-    if protocol != 'aurora':
-        monitors.append('tcp_probe')
+    # if protocol != 'aurora':
+    monitors.append('tcp_probe')
         
     em.set_monitors(monitors)
     em.run()
