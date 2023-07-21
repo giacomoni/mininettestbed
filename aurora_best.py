@@ -16,7 +16,7 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
         print("ERROR: topology \'%s\' not recognised" % topology)
     
     net = Mininet(topo=topo)
-    path = "/home/luca/mininettestbed/nooffload/results_fairness_aqm/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
+    path = "/home/luca/mininettestbed/nooffload/aurora_best_A/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
     mkdirp(path)
 
     bdp_in_bytes = int(10*(2**20)*2*delay*(10**-3)/8)
