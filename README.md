@@ -24,6 +24,13 @@ Download PCC-Uspace and PCC-RL and follow the repo's instruction to install Auro
 Install python interpreter for Orca's agent using venv:
 TODO: commands
 
+## Configuration
+Set your username in
+
+core/config.py
+
+Make sure installation location of Orca, PCC-RL and PCC-Uspace match the path set in core/config.py (home directory)
+
 ## Running the experiments
 TODO: commands
 
