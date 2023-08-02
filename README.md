@@ -10,8 +10,8 @@ Using other Linux kernels may be problematic due to:
 - tcp_probe (kernel module used in our testbed) has been discontinued in favor of tcp kernel event tracing
 
 ### Python
-The Python version used to run the code is 2.6 and all modules versions can be found in requirements2.6.txt
-The RL agents of Orca and Aurora run on Python 3.
+The Python version used to run the code is Python 2.7.13 and all modules versions can be found in requirements27.txt
+The RL agents of Orca and Aurora run on Python 3 and all modules versions can be found in requirements27.txt
 
 ### System config
 TODO
@@ -21,7 +21,10 @@ TODO
 Download Orca and follow the repo's instruction to install it.
 Download PCC-Uspace and PCC-RL and follow the repo's instruction to install Aurora.
 
-Install python interpreter for Orca's agent using venv:
+Install python interpreter (3.5) for Orca's agent using venv:
+TODO: commands
+
+Install python interpreter for Aurora's agent using apt-get:
 TODO: commands
 
 ## Configuration
