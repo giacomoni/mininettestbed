@@ -1,7 +1,7 @@
 
 import os 
 
-USERNAME = 'luca'
+USERNAME = None
 if not USERNAME:
     raise ValueError("You MUST set your username in core/config.py")
 
