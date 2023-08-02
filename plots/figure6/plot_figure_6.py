@@ -8,6 +8,8 @@ from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from mpl_toolkits.axes_grid1 import ImageGrid
 import numpy as np
+from core.config import *
+
 
 def parse_aurora_output(file, offset):
    with open(file, 'r') as fin:
@@ -109,9 +111,9 @@ if __name__ == "__main__":
             LINEWIDTH = 1
 
             if mode == 'inverse':
-                ROOT_PATH = "/Volumes/LaCie/mininettestbed/nooffload/results_friendly_intra_rtt_async_inverse/fifo"
+                ROOT_PATH = "%s/mininettestbed/nooffload/results_friendly_intra_rtt_async_inverse/fifo" % HOME_DIR
             else:
-                ROOT_PATH = "/Volumes/LaCie/mininettestbed/nooffload/results_friendly_intra_rtt_async/fifo"
+                ROOT_PATH = "%s/mininettestbed/nooffload/results_friendly_intra_rtt_async/fifo" % HOME_DIR
             for FLOWS in [2]:
                data = {'cubic':
                           {1: pd.DataFrame([], columns=['time','mean', 'std']),

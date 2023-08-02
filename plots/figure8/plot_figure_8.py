@@ -6,8 +6,10 @@ plt.style.use('science')
 import os
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
+from core.config import *
 
-ROOT_PATH =  "/Volumes/LaCie/mininettestbed/nooffload/results_fairness_bw_async/fifo"
+
+ROOT_PATH =  "%s/mininettestbed/nooffload/results_fairness_bw_async/fifo" % HOME_DIR
 PROTOCOLS = ['cubic', 'orca', 'aurora']
 BWS = [10,20,30,40,50,60,70,80,90,100]
 DELAYS = [20]

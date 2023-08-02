@@ -10,6 +10,8 @@ from functools import reduce
 import numpy as np
 from matplotlib.patches import Ellipse
 import matplotlib.transforms as transforms
+from core.config import *
+
 
 def confidence_ellipse(x, y, ax, n_std=1.0, facecolor='none', **kwargs):
     """
@@ -484,7 +486,7 @@ def plot_data(data, filename, ylim=None):
 
 
 if __name__ == "__main__":
-    ROOT_PATH = "/Volumes/LaCie/mininettestbed/nooffload/results_fairness_aqm"
+    ROOT_PATH = "%s/mininettestbed/nooffload/results_fairness_aqm" % HOME_DIR
     PROTOCOLS = ['cubic', 'orca', 'aurora']
     DELAYS = [10,100]
     RUNS = [1, 2, 3, 4, 5]
@@ -512,7 +514,7 @@ if __name__ == "__main__":
             for delay in DELAYS:
                 if not (delay == 100 and protocol == 'aurora' and CONTROL_VAR == 4):
                     axes.scatter(data.loc[delay,CONTROL_VAR, protocol]['delay_mean']/ (delay*2), data.loc[delay,CONTROL_VAR, protocol]['util_mean']/100 - data.loc[delay,CONTROL_VAR, protocol]['retr_mean']/100, edgecolors=COLOR_MAP[protocol], marker=MARKER_MAP[delay], facecolors='none', alpha=0.25)
-                    axes.scatter(data.loc[delay,CONTROL_VAR, protocol]['delay_mean']/ (delay*2), data.loc[delay,CONTROL_VAR, protocol]['util_mean']/100, edgecolors=COLOR_MAP[protocol], marker=MARKER_MAP[delay], facecolors='none', label=f'{protocol}-{2*delay}')
+                    axes.scatter(data.loc[delay,CONTROL_VAR, protocol]['delay_mean']/ (delay*2), data.loc[delay,CONTROL_VAR, protocol]['util_mean']/100, edgecolors=COLOR_MAP[protocol], marker=MARKER_MAP[delay], facecolors='none', label='%s-%s' % (protocol, 2*delay))
                     subset = df[(df['protocol'] == protocol) & (df['qmult'] == CONTROL_VAR)  & (df['min_delay'] == delay)]
                     y = subset['util_mean'].values/100
                     x = subset['delay_mean'].values/(delay*2)
@@ -525,7 +527,7 @@ if __name__ == "__main__":
         axes.set( ylabel="Norm. Throughput", xlabel="Norm. Delay", ylim=[0,1])
         axes.invert_xaxis()
         for format in ['pdf', 'png']:
-            plt.savefig(f'{CONTROL_VAR}qmult_scatter1_and_2.{format}', dpi=720)
+            plt.savefig('%sqmult_scatter1_and_2.%s' % (CONTROL_VAR,format), dpi=720)
 
 
 

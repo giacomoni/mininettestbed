@@ -11,3 +11,5 @@ parkinglottest
 plots/*.pdf
 aurora_analysis/*
 tcp_tracing/*
+*.png
+*.pdf

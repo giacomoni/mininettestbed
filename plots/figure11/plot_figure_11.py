@@ -9,6 +9,8 @@ pd.set_option('display.max_rows', None)
 import numpy as np
 from matplotlib.pyplot import figure
 mpl.rcParams.update({'font.size': 12})
+from core.config import *
+
 
 
 PROTOCOLS = ['cubic', 'orca', 'aurora']
@@ -31,7 +33,7 @@ final_handles = []
 final_labels = []
 
 
-ROOT_PATH = "/Volumes/LaCie/mininettestbed/nooffload/results_responsiveness_bw_rtt/fifo"
+ROOT_PATH = "%s/mininettestbed/nooffload/results_responsiveness_bw_rtt/fifo" % HOME_DIR
 for protocol in PROTOCOLS:
     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_1flows_22tcpbuf_%s/run%s' % (BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, RUN)
     # Compute the average optimal throughput
@@ -81,7 +83,7 @@ for handle, label in zip(handles,labels):
 protocol_data = {}
 ax = axes[1]
 ax2 = ax.twinx()
-ROOT_PATH = "/Volumes/LaCie/mininettestbed/nooffload/results_responsiveness_loss/fifo"
+ROOT_PATH = "%s/mininettestbed/nooffload/results_responsiveness_loss/fifo" % HOME_DIR
 for protocol in PROTOCOLS:
     PATH = ROOT_PATH + '/Dumbell_%smbit_%sms_%spkts_0loss_1flows_22tcpbuf_%s/run%s' % (
     BW, DELAY, int(QMULT * BDP_IN_PKTS), protocol, RUN)

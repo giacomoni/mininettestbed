@@ -6,6 +6,8 @@ import os
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 10000
 pd.set_option('display.max_rows', None)
+from core.config import *
+
 
 
 def get_aqm_data(BW,aqm, delay, qmult):
@@ -237,7 +239,7 @@ def plot_data(data, filename, ylim=None):
 
 
 if __name__ == "__main__":
-    ROOT_PATH = "/Volumes/LaCie/mininettestbed/nooffload/results_fairness_aqm"
+    ROOT_PATH = "%s/mininettestbed/nooffload/results_fairness_aqm" % HOME_DIR
     PROTOCOLS = ['cubic', 'orca', 'aurora']
     BW = 100
     DELAY = 10

@@ -9,6 +9,8 @@ pd.set_option('display.max_rows', None)
 import numpy as np
 from matplotlib.pyplot import figure
 import statistics
+from core.config import *
+
 
 
 def get_df(ROOT_PATH, PROTOCOLS, RUNS, BW, DELAY, QMULT):
@@ -92,8 +94,8 @@ DELAY = 50
 QMULT = 1
 RUNS = list(range(1,51))
 
-bw_rtt_data = get_df("/Volumes/LaCie/mininettestbed/nooffload/results_responsiveness_bw_rtt/fifo", PROTOCOLS, RUNS, BW, DELAY, QMULT)
-loss_data =  get_df("/Volumes/LaCie/mininettestbed/nooffload/results_responsiveness_loss/fifo", PROTOCOLS, RUNS, BW, DELAY, QMULT)
+bw_rtt_data = get_df("%s/mininettestbed/nooffload/results_responsiveness_bw_rtt/fifo" % HOME_DIR, PROTOCOLS, RUNS, BW, DELAY, QMULT)
+loss_data =  get_df("%s/mininettestbed/nooffload/results_responsiveness_loss/fifo" % HOME_DIR, PROTOCOLS, RUNS, BW, DELAY, QMULT)
 
 BINS = 50
 fig, axes = plt.subplots(nrows=1, ncols=1,figsize=(3,1.5))
@@ -106,14 +108,14 @@ for protocol in PROTOCOLS:
     # evaluate the cumulative
     cumulative = np.cumsum(values)
     # plot the cumulative function
-    ax.plot(base[:-1], cumulative/50*100, label=f"{protocol}-rtt", c=COLOR[protocol])
+    ax.plot(base[:-1], cumulative/50*100, label="%s-rtt" % protocol, c=COLOR[protocol])
 
     avg_goodputs = loss_data[loss_data['protocol'] == protocol]['average_retr_rate']
     values, base = np.histogram(avg_goodputs, bins=BINS)
     # evaluate the cumulative
     cumulative = np.cumsum(values)
     # plot the cumulative function
-    ax.plot(base[:-1], cumulative / 50 * 100, label=f"{protocol}-loss", c=COLOR[protocol], linestyle='dashed')
+    ax.plot(base[:-1], cumulative / 50 * 100, label="%s-loss" % protocol, c=COLOR[protocol], linestyle='dashed')
 
 ax.set(xlabel="Average Retr. Rate (Mbps)", ylabel="Percentage of Trials (\%)")
 
