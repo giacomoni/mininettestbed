@@ -8,6 +8,24 @@ from utils import *
 import os
 from emulation import *
 import sys
+import random
+import numpy as np
+def  generate_traffic_shape(seed, qsize_in_bytes):
+    random.seed(seed)
+    RUN_LENGTH = 300 #s
+    CHANGE_PERIOD = 10 #s
+    start_time = CHANGE_PERIOD
+    traffic_config = []
+    bw_list = [4,12,24]
+    for i in range(9):
+        start_time = (CHANGE_PERIOD*i)
+        random_bw = bw_list[i%3] # Mbps
+        traffic_config.append(TrafficConf('s2', 's3', start_time, CHANGE_PERIOD, 'tbf', 
+                                      (('s2', 's3'), random_bw, None, qsize_in_bytes, False, 'fifo', None, 'change')))
+        
+            
+    return traffic_config
+
 
 def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buffer_mult=3, run=0, aqm='fifo', loss=None, n_flows=2):
     if topology == 'Dumbell':
@@ -16,10 +34,11 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
         print("ERROR: topology \'%s\' not recognised" % topology)
     
     net = Mininet(topo=topo)
-    path = "/home/luca/mininettestbed/nooffload/results_fairness_aqm/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
+    path = "/media/luca/LaCie1/mininettestbed/nooffload/results_responsiveness_bw_orcaexp3/%s/%s_%smbit_%sms_%spkts_%sloss_%sflows_%stcpbuf_%s/run%s" % (aqm, topology, bw, delay, int(qsize_in_bytes/1500), loss, n_flows, tcp_buffer_mult, protocol, run)
     mkdirp(path)
 
     bdp_in_bytes = int(10*(2**20)*2*delay*(10**-3)/8)
+    qsize_in_bytes = int(1.5*(1024*1024))
 
     #  Configure size of TCP buffers
     #  TODO: check if this call can be put after starting mininet
@@ -30,29 +49,19 @@ def run_emulation(topology, protocol, params, bw, delay, qsize_in_bytes, tcp_buf
     net.start()
 
 
-    disable_offload(net)
+    # disable_offload(net)
 
     network_config = [NetworkConf('s1', 's2', None, 2*delay, 3*bdp_in_bytes, False, 'fifo', loss),
                       NetworkConf('s2', 's3', bw, None, qsize_in_bytes, False, aqm, None)]
     
     if n_flows == 1:
-        traffic_config = [TrafficConf('c1', 'x1', 0, 60, protocol)]
-                        #   TrafficConf('c2', 'x2', 25, 75, protocol),
-                        #   TrafficConf('c3', 'x3', 50, 50, protocol),
-                        #   TrafficConf('c4', 'x4', 75, 25, protocol)]
-    elif n_flows == 2:
-        traffic_config = [TrafficConf('c1', 'x1', 0, 600, protocol),
-                           TrafficConf('c2', 'x2', 100, 700, protocol)]
-    elif n_flows == 3:
-        traffic_config = [TrafficConf('c1', 'x1', 0, 600, protocol),
-                         TrafficConf('c2', 'x2', 100, 700, protocol),
-                         TrafficConf('c3', 'x3', 200, 800, protocol)]
-    elif n_flows == 4:
-        traffic_config = [TrafficConf('c1', 'x1', 0, 100, protocol),
-                         TrafficConf('c2', 'x2', 25, 100, protocol),
-                         TrafficConf('c3', 'x3', 50, 100, protocol),
-                         TrafficConf('c4', 'x4', 75, 100, protocol)]
+        traffic_config = [TrafficConf('c1', 'x1', 0, 90, protocol)]
+        traffic_config.extend(generate_traffic_shape(run, qsize_in_bytes))
+    else:
+        print("ERROR: number of flows greater than 1")
+        exit()
 
+    # TODO: create the scheduled changes in network configuration
 
     
     em = Emulation(net, network_config, traffic_config, path)
