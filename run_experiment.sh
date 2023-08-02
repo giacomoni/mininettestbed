@@ -239,13 +239,77 @@
 # done
 
 
-PROTOCOLS="aurora"
-BANDWIDTHS="2 6"
-DELAYS="50"
-RUNS="1 2 3 4 5"  
+# PROTOCOLS="aurora"
+# BANDWIDTHS="2 6"
+# DELAYS="50"
+# RUNS="1 2 3 4 5"  
+# QMULTS="1"
+# AQMS='fifo'
+# FLOWS='4'
+
+
+# for bw in $BANDWIDTHS
+# do
+# for del in $DELAYS
+# do
+# for qmult in $QMULTS
+# do
+# for flow in $FLOWS
+# do
+#    for protocol in $PROTOCOLS
+#    do
+#    for aqm in $AQMS
+#    do
+#        for run in $RUNS
+#        do
+#            sudo python aurora_best.py $del $bw $qmult $protocol $run $aqm 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+# done
+
+# PROTOCOLS="cubic orca aurora"
+# BANDWIDTHS="50"
+# DELAYS="50"
+# RUNS="1"  
+# QMULTS="1"
+# AQMS='fifo'
+# FLOWS='1'
+
+
+# for bw in $BANDWIDTHS
+# do
+# for del in $DELAYS
+# do
+# for qmult in $QMULTS
+# do
+# for flow in $FLOWS
+# do
+#    for protocol in $PROTOCOLS
+#    do
+#    for aqm in $AQMS
+#    do
+#        for run in {1..50}
+#        do
+#            sudo python responsiveness_bw_rtt.py $del $bw $qmult $protocol $run $aqm 0 $flow
+#        done
+#    done
+#    done
+#    done
+#    done
+#    done
+# done
+
+PROTOCOLS="cubic orca aurora"
+BANDWIDTHS="50"
+DELAYS="10"
+RUNS="16"  
 QMULTS="1"
 AQMS='fifo'
-FLOWS='4'
+FLOWS='1'
 
 
 for bw in $BANDWIDTHS
@@ -262,7 +326,7 @@ do
    do
        for run in $RUNS
        do
-           sudo python aurora_best.py $del $bw $qmult $protocol $run $aqm 0 $flow
+           sudo python responsiveness_bw.py $del $bw $qmult $protocol $run $aqm 0 $flow
        done
    done
    done
@@ -270,4 +334,3 @@ do
    done
    done
 done
-

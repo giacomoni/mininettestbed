@@ -48,7 +48,7 @@ class Emulation:
             for link in links:
                 self.configure_link(link, config.bw, config.delay, config.qsize, config.bidir, aqm=config.aqm, loss=config.loss)
     
-    def configure_link(self, link, bw, delay, qsize, bidir, aqm='fifo', loss=None):
+    def configure_link(self, link, bw, delay, qsize, bidir, aqm='fifo', loss=None, command='add'):
         interfaces = [link.intf1, link.intf2]
         if bidir:
             n = 2
@@ -60,46 +60,46 @@ class Emulation:
             
             if delay and not bw:
                 print("loss is %s" % loss)
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s' % (intf_name, delay,  100000)
+                cmd = 'sudo tc qdisc %s dev %s root handle 1:0 netem delay %sms limit %s' % (command, intf_name, delay,  100000)
                 if (loss is not None) and (float(loss) > 0):
                     cmd += " loss %s%%" % (loss)
                 if aqm == 'fq_codel':
-                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: fq_codel limit 17476 target 5ms interval 100ms flows 100" % (intf_name)
+                    cmd += "&& sudo tc qdisc %s dev %s parent 1: handle 2: fq_codel limit 17476 target 5ms interval 100ms flows 100" % (command, intf_name)
                 elif aqm == 'codel':
-                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: codel limit 17476 target 5ms interval 100ms" % (intf_name)
+                    cmd += "&& sudo tc qdisc %s dev %s parent 1: handle 2: codel limit 17476 target 5ms interval 100ms" % (command, intf_name)
                 elif aqm == 'fq':
-                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: sfq perturb 10" % (intf_name)
+                    cmd += "&& sudo tc qdisc %s dev %s parent 1: handle 2: sfq perturb 10" % (command, intf_name)
 
             elif bw and not delay:
                 burst = int(10*bw*(2**20)/250/8)
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 tbf rate %smbit burst %s limit %s ' % (intf_name, bw, burst, qsize)
+                cmd = 'sudo tc qdisc %s dev %s root handle 1:0 tbf rate %smbit burst %s limit %s ' % (command, intf_name, bw, burst, qsize)
                 if aqm == 'fq_codel':
-                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: fq_codel limit %s target 5ms interval 100ms flows 100" % (intf_name,     int(qsize/1500))
+                    cmd += "&& sudo tc qdisc %s dev %s parent 1: handle 2: fq_codel limit %s target 5ms interval 100ms flows 100" % (command, intf_name,     int(qsize/1500))
                 elif aqm == 'codel':
-                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: codel limit %s target 5ms interval 100ms" % (intf_name,   int(qsize/1500))
+                    cmd += "&& sudo tc qdisc %s dev %s parent 1: handle 2: codel limit %s target 5ms interval 100ms" % (command, intf_name,   int(qsize/1500))
                 elif aqm == 'fq':
-                    cmd += "&& sudo tc qdisc add dev %s parent 1: handle 2: sfq perturb 10" % (intf_name)
+                    cmd += "&& sudo tc qdisc %s dev %s parent 1: handle 2: sfq perturb 10" % (command, intf_name)
 
             elif delay and bw:
                 burst = int(10*bw*(2**20)/250/8)
-                cmd = 'sudo tc qdisc add dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc add dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s ' % (intf_name, delay,    100000, intf_name, bw, burst, qsize)
+                cmd = 'sudo tc qdisc %s dev %s root handle 1:0 netem delay %sms limit %s && sudo tc qdisc %s dev %s parent 1:1 handle 10:0 tbf rate %smbit burst %s limit %s ' % (command, intf_name, delay,    100000, command, intf_name, bw, burst, qsize)
                 if aqm == 'fq_codel':
-                    cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: fq_codel limit %s target 5ms interval 100ms flows 100" % (intf_name,     int(qsize/1500))
+                    cmd += "&& sudo tc qdisc %s dev %s parent 10: handle 20: fq_codel limit %s target 5ms interval 100ms flows 100" % (command, intf_name,     int(qsize/1500))
                 elif aqm == 'codel':
-                    cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: codel limit %s target 5ms interval 100ms" % (intf_name,    int(qsize/1500))
+                    cmd += "&& sudo tc qdisc %s dev %s parent 10: handle 20: codel limit %s target 5ms interval 100ms" % (command, intf_name,    int(qsize/1500))
                 elif aqm == 'fq':
-                    cmd += "&& sudo tc qdisc add dev %s parent 10: handle 20: sfq perturb 10" % (intf_name)
+                    cmd += "&& sudo tc qdisc %s dev %s parent 10: handle 20: sfq perturb 10" % (command, intf_name)
 
             else:
                 print("ERROR: either the delay or bandiwdth must be specified")
 
             if 's' in intf_name:
                 print("Running the following command in root terminal: %s" % cmd)
-                os.system("sudo tc qdisc del dev %s  root 2> /dev/null" % intf_name)
+                # os.system("sudo tc qdisc del dev %s  root 2> /dev/null" % intf_name)
                 os.system(cmd)
             else:
                 print("Running the following command in %s's terminal: %s" % (node.name, cmd))
-                node.cmd("sudo tc qdisc del dev %s  root 2> /dev/null" % intf_name)
+                # node.cmd("sudo tc qdisc del dev %s  root 2> /dev/null" % intf_name)
                 node.cmd(cmd)
 
     def configure_traffic(self, traffic_config=None):
@@ -127,11 +127,12 @@ class Emulation:
             destination = flowconfig.dest
             protocol = flowconfig.proto
 
-            self.waitoutput.append(source_node)
-            self.waitoutput.append(destination)
+            if protocol != 'tbf' and protocol != 'netem':
+                self.waitoutput.append(source_node)
+                self.waitoutput.append(destination)
 
-            self.sending_nodes.append(source_node)
-            self.receiving_nodes.append(destination)
+                self.sending_nodes.append(source_node)
+                self.receiving_nodes.append(destination)
 
             if protocol == 'orca':
                 params = (source_node,duration)
@@ -160,8 +161,15 @@ class Emulation:
                 self.call_first.append(Command(command, params, None))
 
                 # Create client start up call
-                params = (source_node,destination,duration,"%s/pcc_saved_models/model_B" % HOME_DIR)
+                params = (source_node,destination,duration,"%s/pcc_saved_models/icml_paper_model" % HOME_DIR)
                 command = self.start_aurora_client
+                self.call_second.append(Command(command, params, start_time - previous_start_time))
+            elif protocol == 'tbf' or protocol == 'netem':
+                # Change the tbf rate to the value provided
+                params = list(flowconfig.params)
+                nodes_names = params[0]
+                params[0] = self.network.linksBetween(self.network.get(nodes_names[0]), self.network.get(nodes_names[1]))[0]
+                command = self.configure_link
                 self.call_second.append(Command(command, params, start_time - previous_start_time))
             else:
                 print("ERROR: Protocol %s not recognised. Terminating..." % (protocol))
@@ -257,7 +265,7 @@ class Emulation:
     def start_aurora_client(self, node_name, destination_name, duration, model_path, port=9000, perf_interval=1):
         node = self.network.get(node_name)
         destination = self.network.get(destination_name)
-        auroracmd = 'sudo -u %s EXPERIMENT_PATH=%s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccclient send %s %s %s %s --pcc-rate-control=python3 -pyhelper=loaded_client -pypath=%s/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (USERNAME, self.path, PCC_USPACE_INSTALL_FOLDER, PCC_USPACE_INSTALL_FOLDER, destination.IP(), port, perf_interval, duration, PCC_RL_INSTALL_FOLDER, model_path)
+        auroracmd = 'sudo -u %s EXPERIMENT_PATH=%s LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s/src/core %s/src/app/pccclient send %s %s %s %s --pcc-rate-control=python4 -pyhelper=loaded_client -pypath=%s/src/udt-plugins/testing/ --history-len=10 --pcc-utility-calc=linear --model-path=%s' % (USERNAME, self.path, PCC_USPACE_INSTALL_FOLDER, PCC_USPACE_INSTALL_FOLDER, destination.IP(), port, perf_interval, duration, PCC_RL_INSTALL_FOLDER, model_path)
         print("Sending command '%s' to host %s" % (auroracmd, node.name))
         node.sendCmd(auroracmd)
 
@@ -273,8 +281,9 @@ class Emulation:
         emulation_info['topology'] = str(self.network.topo)
         flows = []
         for config in self.traffic_config:
-            flow = [config.source, config.dest, self.network.get(config.source).IP(), self.network.get(config.dest).IP(), config.start, config.proto]
+            flow = [config.source, config.dest, self.network.get(config.source).IP(), self.network.get(config.dest).IP(), config.start, config.proto, config.params]
             flows.append(flow)
         emulation_info['flows'] = flows
         with open(self.path + "/emulation_info.json", 'w') as fout:
             json.dump(emulation_info,fout)
+
