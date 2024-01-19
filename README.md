@@ -42,7 +42,7 @@ USERNAME=None
 Make sure installation location of Orca, PCC-RL and PCC-Uspace match the path set in core/config.py (home directory)
 
 ## Running the experiments
-The experiments folder contain one script per experiment. The destination folder of the results 
+The experiments folder contain one script per experiment. 
 
 To run them all, just execute
 
