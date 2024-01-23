@@ -20,8 +20,8 @@ All kernel configuration parameters can be found in *sysctl.txt*, although they 
 ## Installation
 
 Download and install [Mininet](http://mininet.org/).
-Download [Orca](https://github.com/temp2691317/Orca) and follow the repo's instruction to install it.
-Download [PCC-Uspace](https://github.com/temp2691317/PCC-Uspace) and [PCC-RL](https://github.com/temp2691317/PCC-RL) and follow the repo's instruction to install Aurora.
+Download [Orca](https://github.com/giacomoni/Orca) and follow the repo's instruction to install it.
+Download [PCC-Uspace](https://github.com/giacomoni/PCC-Uspace) and [PCC-RL](https://github.com/giacomoni/PCC-RL) and follow the repo's instruction to install Aurora.
 
 
 Install python interpreter (3.5) for Orca's agent using venv:
@@ -56,4 +56,4 @@ A detailed explanation of the data collected during emulation can be found in th
 ## Plotting results
 All plots on the paper can be reproduced by running the corresponding script in the plots folder. The scripts assume that results are stored in *mininetestbed/nooffload*.
 
-You can also reproduce the plots without having to rerun the experiment by downloading the dataset available at TODO:figshare. Make sure to move the data into the expected location or change the path(s) in the python scripts
+You can also reproduce the plots without having to rerun the experiment by downloading the dataset available [here](https://sussex.figshare.com/articles/dataset/Data_for_Reinforcement_Learning-based_Congestion_Control_A_Systematic_Evaluation_of_Fairness_Efficiency_and_Responsiveness/24970173). Make sure to move the data into the expected location or change the path(s) in the python scripts
