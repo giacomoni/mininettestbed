@@ -2,7 +2,6 @@
 results/*
 *.zip
 rl_logging
-*.txt
 plots/*.png
 results*
 .idea
